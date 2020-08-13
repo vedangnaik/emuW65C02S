@@ -2,19 +2,27 @@
 #define W65C02S_H
 
 #include <iostream>
-#include <array>
+#include <map>
 #include <chrono>
 #include <thread>
+
 
 class W65C02S {
 public:
     W65C02S(int clockSpeedinHz, uint8_t* RAMPtr);
     void reset();
-    void startFetchDecodeExecute();
+    void run();
 
 private:
-    uint8_t* RAMPtr;
+    uint8_t* memory;
     std::chrono::microseconds timeToWait;
+
+    // opcodes to instruction hashmap
+    std::map<uint8_t, void (W65C02S::*)(uint8_t)> decoder = {
+        {0xea, &W65C02S::NOP},
+        {0xa9, &W65C02S::LDA},
+        {0x8d, &W65C02S::STA}
+    };
 
     // internal registers
     uint8_t IR;
@@ -24,6 +32,11 @@ private:
     uint8_t P;
     uint8_t S;
     uint16_t PC;
+
+    // instruction executors
+    void NOP(uint8_t opcode);
+    void LDA(uint8_t opcode);
+    void STA(uint8_t opcode);
 };
 
 #endif
