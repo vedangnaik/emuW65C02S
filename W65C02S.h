@@ -1,9 +1,11 @@
 #include <iostream>
 #include <array>
+#include <chrono>
+#include <thread>
 
 class W65C02S {
 public:
-    W65C02S(uint8_t* RAMPtr);
+    W65C02S(int clockSpeedinHz, uint8_t* RAMPtr);
     void reset();
     void run();
 
@@ -14,6 +16,7 @@ public:
 
 private:
     uint8_t* RAMPtr;
+    std::chrono::microseconds timeToWait;
 
     // internal registers
     uint8_t IR;

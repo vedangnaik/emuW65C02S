@@ -9,6 +9,6 @@ int main() {
     RAM[0xFFFD] = 0x00;
 
     std::cout << "Resetting 6502..." << std::endl;
-    W65C02S* my6502 = new W65C02S(&RAM[0]);
+    W65C02S* my6502 = new W65C02S(1, &RAM[0]);
     my6502->run();
 }
