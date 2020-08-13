@@ -1,3 +1,6 @@
+#ifndef W65C02S_H
+#define W65C02S_H
+
 #include <iostream>
 #include <array>
 #include <chrono>
@@ -7,12 +10,7 @@ class W65C02S {
 public:
     W65C02S(int clockSpeedinHz, uint8_t* RAMPtr);
     void reset();
-    void run();
-
-    // helper functions
-    void printRegisters();
-
-    // external pins of interest
+    void startFetchDecodeExecute();
 
 private:
     uint8_t* RAMPtr;
@@ -25,9 +23,7 @@ private:
     uint8_t Y;
     uint8_t P;
     uint8_t S;
-    uint32_t PC;
-    
-    enum OPCODES {
-        NOP = 0xea
-    };
+    uint16_t PC;
 };
+
+#endif
