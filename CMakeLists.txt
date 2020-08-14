@@ -8,6 +8,7 @@ add_library(
     W65C02SLib STATIC 
     W65C02S.h
     W65C02S.cpp
+    decoder.cpp
     executors.cpp)
 
 add_executable(emuW65C02S main.cpp)
