@@ -6,6 +6,8 @@
 #include <chrono>
 #include <thread>
 
+#define MAX_MEMSIZE 65536
+
 
 class W65C02S {
 public:

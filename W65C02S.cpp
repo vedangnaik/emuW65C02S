@@ -21,9 +21,6 @@ void W65C02S::run() {
         executor = this->decoder[this->IR];
         // execute instruction
         (this->*(executor))(this->IR);
-
-        // sleep for time
-        std::this_thread::sleep_for(this->timeToWait);
         // increment PC
         this->PC++;
     }
