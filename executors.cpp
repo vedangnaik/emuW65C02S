@@ -181,6 +181,54 @@ void W65C02S::NOP(uint8_t opcode) {
     ;
 }
 
+void W65C02S::PHA(uint8_t opcode) {
+    switch (opcode) {
+        case 0x48: {
+            this->memory[0x0100 + this->S] = this->A;
+            this->S--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for PHA" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PHP(uint8_t opcode) {
+    switch (opcode) {
+        case 0x08: {
+            this->memory[0x0100 + this->S] = this->P;
+            this->S--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for PHP" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PHX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xDA: {
+            this->memory[0x0100 + this->S] = this->X;
+            this->S--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for PHX" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PHY(uint8_t opcode) {
+    switch (opcode) {
+        case 0x5A: {
+            this->memory[0x0100 + this->S] = this->Y;
+            this->S--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for PHY" << std::endl;
+        }
+    }
+}
+
 void W65C02S::ROL(uint8_t opcode) {
     switch (opcode) {
         case 0x2E: {   // absolute rotate left 

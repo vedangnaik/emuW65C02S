@@ -23,7 +23,7 @@ void W65C02S::run() {
         // execute instruction
         (this->*(executor))(this->IR);
         // print out A register's value for now
-        std::cout << "A: " << (int)this->A << std::endl;
+        std::cout << "S: " << (int)this->S << std::endl;
         // increment PC
         this->PC++;
     }

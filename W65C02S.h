@@ -43,6 +43,10 @@ private:
     void LDX(uint8_t opcode);
     void LDY(uint8_t opcode);
     void NOP(uint8_t opcode);
+    void PHA(uint8_t opcode);
+    void PHP(uint8_t opcode);
+    void PHX(uint8_t opcode);
+    void PHY(uint8_t opcode);
     void ROL(uint8_t opcode);
     void ROR(uint8_t opcode);
     void STA(uint8_t opcode);
