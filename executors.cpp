@@ -1,5 +1,93 @@
 #include "W65C02S.h"
 
+void W65C02S::DEC(uint8_t opcode) {
+    switch (opcode) {
+        case 0xCE: {   // decrement absolute address
+            int addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            this->memory[addr]--;
+            break;
+        } case 0xDE: {
+            break; 
+        } case 0x3A: { // decrement register A
+            this->A--;
+            break; 
+        } case 0xC6: { 
+            break; 
+        } case 0xD6: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for DEC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::DEX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xCA: {
+            this->X--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for DEX" << std::endl;
+        }
+    }
+}
+
+void W65C02S::DEY(uint8_t opcode) {
+    switch (opcode) {
+        case 0x88: {
+            this->Y--;
+            break;
+        } default: {
+            std::cout << "invalid opcode for DEY" << std::endl;
+        }
+    }
+}
+
+void W65C02S::INC(uint8_t opcode) {
+    switch (opcode) {
+        case 0xEE: {   // increment absolute address
+            int addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            this->memory[addr]++;
+            break;
+        } case 0xFE: {
+            break; 
+        } case 0x1A: { // increment register A
+            this->A++;
+            break; 
+        } case 0xE6: { 
+            break; 
+        } case 0xF6: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for INC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::INX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xE8: {
+            this->X++;
+            break;
+        } default: {
+            std::cout << "invalid opcode for INX" << std::endl;
+        }
+    }
+}
+
+void W65C02S::INY(uint8_t opcode) {
+    switch (opcode) {
+        case 0xC8: {
+            this->Y++;
+            break;
+        } default: {
+            std::cout << "invalid opcode for INY" << std::endl;
+        }
+    }
+}
+
 void W65C02S::JMP(uint8_t opcode) {
     switch (opcode) {
         case 0x4C: {   // jump to absolute address

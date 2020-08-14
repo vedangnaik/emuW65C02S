@@ -1,6 +1,26 @@
 #include "W65C02S.h"
 
 std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
+    // DEC: Decrement memory or register A
+    {0xCE, &W65C02S::DEC},
+    {0xDE, &W65C02S::DEC},
+    {0x3A, &W65C02S::DEC},
+    {0xC6, &W65C02S::DEC},
+    {0xD6, &W65C02S::DEC},
+    // DEX: Decrement register X
+    {0xCA, &W65C02S::DEX},
+    // DEY: Decrement register Y
+    {0x88, &W65C02S::DEY},
+    // INC: Increment memory or register A
+    {0xEE, &W65C02S::INC},
+    {0xFE, &W65C02S::INC},
+    {0x1A, &W65C02S::INC},
+    {0xE6, &W65C02S::INC},
+    {0xF6, &W65C02S::INC},
+    // INX: Increment register X
+    {0xE8, &W65C02S::INX},
+    // INY: Increment register Y
+    {0xC8, &W65C02S::INY},
     // JMP: Jump unconditionally
     {0x4C, &W65C02S::JMP},
     // LDA: Load register A
