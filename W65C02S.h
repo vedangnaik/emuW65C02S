@@ -35,6 +35,7 @@ private:
     void NOP(uint8_t opcode);
     void LDA(uint8_t opcode);
     void STA(uint8_t opcode);
+    void JMP(uint8_t opcode);
 };
 
 #endif
