@@ -32,10 +32,16 @@ private:
     static std::map<uint8_t, void (W65C02S::*)(uint8_t)> decoder;
 
     // instruction executors - all defined in executors.cpp
-    void NOP(uint8_t opcode);
-    void LDA(uint8_t opcode);
-    void STA(uint8_t opcode);
     void JMP(uint8_t opcode);
+    void LDA(uint8_t opcode);
+    void LDX(uint8_t opcode);
+    void LDY(uint8_t opcode);
+    void NOP(uint8_t opcode);
+    void ROL(uint8_t opcode);
+    void ROR(uint8_t opcode);
+    void STA(uint8_t opcode);
+    void STX(uint8_t opcode);
+    void STY(uint8_t opcode);
 };
 
 #endif
