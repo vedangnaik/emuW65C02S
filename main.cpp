@@ -18,9 +18,9 @@ int main(int argc, char* argv[]) {
     // (set to absolute path for dev)
     char* fileName = argv[1];
     std::ifstream f("/home/vedang/Desktop/asm6502/a.out", std::ios::binary);
-    if (!f) { 
-        std::cout << "file open failed" << std::endl; 
-        return -1; 
+    if (!f) {
+        std::cout << "file open failed" << std::endl;
+        return -1;
     }
     if (!f.read((char*)RAM, MAX_MEMSIZE)) {
         std::cout << "file read failed" << std::endl;
@@ -31,4 +31,6 @@ int main(int argc, char* argv[]) {
     emuTUI* tui = new emuTUI(&RAM[0], my6502);
 
     tui->start();
+    my6502->run();
+    // while(1) {}
 }

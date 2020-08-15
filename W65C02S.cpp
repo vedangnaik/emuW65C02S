@@ -12,6 +12,9 @@ void W65C02S::reset() {
 }
 
 void W65C02S::run() {
+    // this->runnerThread = std::thread([this]() {
+        
+    // });
     while (1) {
         // fetch instruction
         this->IR = this->memory[this->PC];
@@ -21,6 +24,7 @@ void W65C02S::run() {
         executor = this->decoder[this->IR];
         // execute instruction
         (this->*(executor))(this->IR);
+        // std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         // increment PC
         this->PC++;
     }

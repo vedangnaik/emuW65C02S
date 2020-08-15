@@ -20,10 +20,6 @@ void emuTUI::start() {
             this->formatStack();
         }
     });
-    while (1) {
-        // check for input, exit, here
-        // this->memory[rand() % MAX_MEMSIZE] = rand() % 256;
-    }
 }
 
 void emuTUI::formatMemory() {
