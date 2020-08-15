@@ -12,4 +12,4 @@ add_library(
     executors.cpp)
 
 add_executable(emuW65C02S main.cpp)
-target_link_libraries(emuW65C02S W65C02SLib)
+target_link_libraries(emuW65C02S W65C02SLib ncurses pthread)

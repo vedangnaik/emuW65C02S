@@ -11,13 +11,9 @@
 
 class W65C02S {
 public:
-    W65C02S(int clockSpeedinHz, uint8_t* RAMPtr);
+    W65C02S(uint8_t* memory);
     void reset();
     void run();
-
-private:
-    uint8_t* memory;
-    std::chrono::microseconds timeToWait;
 
     // internal registers
     uint8_t IR;
@@ -27,6 +23,9 @@ private:
     uint8_t P;
     uint8_t S;
     uint16_t PC;
+
+private:
+    uint8_t* memory;
 
     // opcodes to instruction hashmap - defined in decoder.cpp
     static std::map<uint8_t, void (W65C02S::*)(uint8_t)> decoder;
