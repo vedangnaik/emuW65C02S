@@ -13,12 +13,19 @@ public:
     emuTUI(uint8_t* memory, W65C02S* mp);
     // ~emuTUI();
 
-    void printStack(unsigned int winHeight, unsigned int posX, unsigned int posY);
+    void start();
 
 private:
     uint8_t* memory;
     W65C02S* mp;
 
+    WINDOW* stackWin;
+    WINDOW* memoryWin;
+
+    std::thread tuiThread;
+
+    void formatMemory();
+    void formatStack();
 };
 
 #endif

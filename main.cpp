@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "W65C02S.h"
+#include "emuTUI.h"
 
 uint8_t RAM[MAX_MEMSIZE];
 
@@ -26,14 +27,8 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // initscr();
-    // std::thread printer(stackTUI, LINES, 0, 0);
-    // while(1) {
-    //     RAM[0x0100 + (rand() % 256)] = rand() % 256;
-    // }
-    // endwin();
+    W65C02S* my6502 = new W65C02S(&RAM[0]);
+    emuTUI* tui = new emuTUI(&RAM[0], my6502);
 
-    // std::cout << "Resetting 6502..." << std::endl;
-    // W65C02S* my6502 = new W65C02S(&RAM[0]);
-    // my6502->run();
+    tui->start();
 }

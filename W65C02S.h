@@ -6,7 +6,8 @@
 #include <chrono>
 #include <thread>
 
-#define MAX_MEMSIZE 65536
+// Keep this above 0xFFFC lmao, otherwise the reset vector initialization segfaults
+#define MAX_MEMSIZE 65536 
 
 
 class W65C02S {
