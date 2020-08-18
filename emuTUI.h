@@ -19,18 +19,23 @@ private:
     W65C02S* mp;
     std::thread tuiThread;
 
-    WINDOW* stackWin;
-    int stackWinLen;
-    void formatStack();
-
     WINDOW* memoryWin;
     int memoryWinLen;
-    void formatMemory();
+    void formatMemoryWin();
+
+    WINDOW* stackWin;
+    int stackWinLen;
+    void formatStackWin();
 
     WINDOW* regWin;
     int regWinLen;
     int regWinHeight;
-    void formatRegs();    
+    void formatRegWin();  
+
+    WINDOW* controlWin;
+    int cntWinLen;
+    int cntWinHeight;
+    void formatControlWin();
 };
 
 #endif
