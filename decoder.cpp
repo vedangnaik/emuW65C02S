@@ -47,14 +47,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xB4, &W65C02S::LDY},
     // NOP: No operation
     {0xEA, &W65C02S::NOP},
-    // PHA
+    // PH_: Push register onto stack
     {0x48, &W65C02S::PHA},
-    // PHP
     {0x08, &W65C02S::PHP},
-    // PHX
     {0xDA, &W65C02S::PHX},
-    // PHY
     {0x5A, &W65C02S::PHY},
+    // PL_: Pull from stack into register
+    {0x68, &W65C02S::PLA},
+    {0x28, &W65C02S::PLP},
+    {0xFA, &W65C02S::PLX},
+    {0x7A, &W65C02S::PLY},
     // ROL: Bitwise rotate left
     {0x2E, &W65C02S::ROL},
     {0x3E, &W65C02S::ROL},
@@ -78,15 +80,3 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x84, &W65C02S::STY},
     {0x94, &W65C02S::STY},
 };
-
-/*
-    stack stuff
-    PHA
-    PHP
-    PHX
-    PHY
-    PLA
-    PLP
-    PLX
-    PLY
-*/

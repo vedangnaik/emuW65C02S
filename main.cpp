@@ -32,5 +32,4 @@ int main(int argc, char* argv[]) {
 
     tui->start();
     my6502->run();
-    // while(1) {}
 }

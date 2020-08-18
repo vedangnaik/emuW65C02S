@@ -24,7 +24,8 @@ void W65C02S::run() {
         executor = this->decoder[this->IR];
         // execute instruction
         (this->*(executor))(this->IR);
-        // std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+        // delay for dev work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         // increment PC
         this->PC++;
     }

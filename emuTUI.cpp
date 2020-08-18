@@ -51,7 +51,7 @@ void emuTUI::formatStack() {
             line << ": ";
             if (addr > this->mp->S) { // stack pointer
                 line << std::setfill('0') << std::setw(2) 
-                    << std::hex << (int)this->memory[0x1000 + addr];
+                    << std::hex << (int)this->memory[0x0100 + addr];
             } else {
                 line << "--";
             }

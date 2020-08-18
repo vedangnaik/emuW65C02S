@@ -229,6 +229,54 @@ void W65C02S::PHY(uint8_t opcode) {
     }
 }
 
+void W65C02S::PLA(uint8_t opcode) {
+    switch (opcode) {
+        case 0x68: {
+            this->S++;
+            this->A = this->memory[0x0100 + this->S];
+            break;
+        } default: {
+            std::cout << "invalid opcode for PLA" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PLP(uint8_t opcode) {
+    switch (opcode) {
+        case 0x28: {
+            this->S++;
+            this->P = this->memory[0x0100 + this->S];
+            break;
+        } default: {
+            std::cout << "invalid opcode for PLP" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PLX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xFA: {
+            this->S++;
+            this->X = this->memory[0x0100 + this->S];
+            break;
+        } default: {
+            std::cout << "invalid opcode for PLX" << std::endl;
+        }
+    }
+}
+
+void W65C02S::PLY(uint8_t opcode) {
+    switch (opcode) {
+        case 0x7A: {
+            this->S++;
+            this->Y = this->memory[0x0100 + this->S];
+            break;
+        } default: {
+            std::cout << "invalid opcode for PLY" << std::endl;
+        }
+    }
+}
+
 void W65C02S::ROL(uint8_t opcode) {
     switch (opcode) {
         case 0x2E: {   // absolute rotate left 

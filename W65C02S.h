@@ -47,6 +47,10 @@ private:
     void PHP(uint8_t opcode);
     void PHX(uint8_t opcode);
     void PHY(uint8_t opcode);
+    void PLA(uint8_t opcode);
+    void PLP(uint8_t opcode);
+    void PLX(uint8_t opcode);
+    void PLY(uint8_t opcode);
     void ROL(uint8_t opcode);
     void ROR(uint8_t opcode);
     void STA(uint8_t opcode);

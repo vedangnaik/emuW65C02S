@@ -4,7 +4,6 @@
 #include <ncurses.h>
 #include <iomanip>
 #include <sstream>
-#include <chrono>
 #include <thread>
 #include "W65C02S.h"
 
