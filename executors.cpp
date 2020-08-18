@@ -1,5 +1,35 @@
 #include "W65C02S.h"
 
+void W65C02S::ADC(uint8_t opcode) {
+    switch (opcode) {  // add absolute address with carry
+        case 0x6D: {
+            int addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            this->A = this->A + this->memory[addr] + (this->P & 0x01);
+            break;
+        } case 0x7D: {
+            break; 
+        } case 0x79: {
+            break; 
+        } case 0x69: { // add immediate value with carry
+            this->A = this->A + this->memory[++this->PC] + (this->P & 0x01);
+            break;
+        } case 0x65: {
+            break; 
+        } case 0x61: {
+            break; 
+        } case 0x75: {
+            break; 
+        } case 0x72: {
+            break; 
+        } case 0x71: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for ADC" << std::endl;
+        }
+    }
+}
+
 void W65C02S::DEC(uint8_t opcode) {
     switch (opcode) {
         case 0xCE: {   // decrement absolute address

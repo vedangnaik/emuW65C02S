@@ -1,6 +1,16 @@
 #include "W65C02S.h"
 
 std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
+    // ADC: Add accumulator to memory with carry
+    {0x6D, &W65C02S::ADC},
+    {0x7D, &W65C02S::ADC},
+    {0x79, &W65C02S::ADC},
+    {0x69, &W65C02S::ADC},
+    {0x65, &W65C02S::ADC},
+    {0x61, &W65C02S::ADC},
+    {0x75, &W65C02S::ADC},
+    {0x72, &W65C02S::ADC},
+    {0x71, &W65C02S::ADC},
     // DEC: Decrement memory or register A
     {0xCE, &W65C02S::DEC},
     {0xDE, &W65C02S::DEC},
