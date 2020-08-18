@@ -17,14 +17,20 @@ public:
 private:
     uint8_t* memory;
     W65C02S* mp;
-
-    WINDOW* stackWin;
-    WINDOW* memoryWin;
-
     std::thread tuiThread;
 
-    void formatMemory();
+    WINDOW* stackWin;
+    int stackWinLen;
     void formatStack();
+
+    WINDOW* memoryWin;
+    int memoryWinLen;
+    void formatMemory();
+
+    WINDOW* regWin;
+    int regWinLen;
+    int regWinHeight;
+    void formatRegs();    
 };
 
 #endif
