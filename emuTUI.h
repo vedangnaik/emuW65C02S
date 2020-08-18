@@ -36,6 +36,11 @@ private:
     int cntWinLen;
     int cntWinHeight;
     void formatControlWin();
+
+    WINDOW* flagsWin;
+    int flagsWinLen;
+    int flagsWinHeight;
+    void formatFlagsWin();
 };
 
 #endif

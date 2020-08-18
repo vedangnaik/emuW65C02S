@@ -52,12 +52,11 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     );
 
     // control window
-    this->cntWinHeight = 3 + 6;
+    this->cntWinHeight = 2 + 6;
     this->cntWinLen = this->regWinLen;
     this->controlWin = newwin(this->cntWinHeight, this->cntWinLen, 
             this->regWinHeight, 0);
     box(this->controlWin, 0, 0);
-    wrefresh(this->controlWin);
     std::string cntWinTitle = "CONTROL";
     mvwprintw(
         this->controlWin, 
@@ -65,6 +64,21 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
         (this->cntWinLen - cntWinTitle.length()) / 2, 
         cntWinTitle.c_str()
     );
+
+    // flags window
+    this->flagsWinHeight = 7 + 6;
+    this->flagsWinLen = this->regWinLen;
+    this->flagsWin = newwin(this->flagsWinHeight, this->flagsWinLen,
+            this->regWinHeight + this->cntWinHeight, 0);
+    box(this->flagsWin, 0, 0);
+    std::string flagsWinTitle = "FLAGS";
+    mvwprintw(
+        this->flagsWin, 
+        1, 
+        (this->flagsWinLen - flagsWinTitle.length()) / 2, 
+        flagsWinTitle.c_str()
+    );
+
 }
 
 void emuTUI::start() {
@@ -74,6 +88,7 @@ void emuTUI::start() {
             this->formatStackWin();
             this->formatRegWin();
             this->formatControlWin();
+            this->formatFlagsWin();
         }
     });
 }
@@ -139,8 +154,25 @@ void emuTUI::formatControlWin() {
     mvwprintw(this->controlWin, 4, 3, 
         "%-*s%.2x", this->cntWinLen - 8, "Instruction register:", this->mp->IR);
     uint16_t addr = (this->memory[0xFFFD] << 8) + this->memory[0xFFFC];
-    mvwprintw(this->controlWin, 5, 3, 
-        "%-*s%.4x", this->cntWinLen - 10, "Reset vector :", addr);
 
     wrefresh(this->controlWin);
+}
+
+void emuTUI::formatFlagsWin() {
+    mvwprintw(this->flagsWin, 3, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Carry:", this->mp->C);
+    mvwprintw(this->flagsWin, 4, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Zero:", this->mp->Z);
+    mvwprintw(this->flagsWin, 5, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Interrupt disable:", this->mp->I);
+    mvwprintw(this->flagsWin, 6, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Decimal mode:", this->mp->D);
+    mvwprintw(this->flagsWin, 7, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "BRK:", this->mp->B);
+    mvwprintw(this->flagsWin, 8, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Overflow:", this->mp->V);
+    mvwprintw(this->flagsWin, 9, 3, 
+        "%-*s%.1d", this->flagsWinLen - 7, "Negative:", this->mp->N);
+
+    wrefresh(this->flagsWin);
 }

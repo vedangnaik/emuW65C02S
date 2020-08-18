@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
         std::cout << "file open failed" << std::endl;
         return -1;
     }
+    // This should be rewritten to properly align and pad files which are not exactly 65536 bytes long. 
     if (!f.read((char*)RAM, MAX_MEMSIZE)) {
         std::cout << "file read failed" << std::endl;
         return -1;
