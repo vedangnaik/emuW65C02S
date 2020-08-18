@@ -6,6 +6,9 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     
     // init all ncurses stuff here
     initscr();
+    if (has_colors()) {
+        start_color();
+    }
 
     // init all windows here
     // memory window
@@ -13,17 +16,41 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     this->memoryWin = newwin(LINES, this->memoryWinLen, 
             0, COLS - this->memoryWinLen);
     box(this->memoryWin, 0, 0);
+    std::string memoryWinTitle = "MEMORY";
+    mvwprintw(
+        this->memoryWin, 
+        1, 
+        (this->memoryWinLen - memoryWinTitle.length()) / 2, 
+        memoryWinTitle.c_str()
+    );
+
     // stack window
     this->stackWinLen = 70;
     this->stackWin = newwin(LINES, this->stackWinLen, 
             0, COLS - this->memoryWinLen - this->stackWinLen);
     box(this->stackWin, 0, 0);
+    std::string stackWinTitle = "STACK";
+    mvwprintw(
+        this->stackWin, 
+        1, 
+        (this->stackWinLen - stackWinTitle.length()) / 2, 
+        stackWinTitle.c_str()
+    );
+
     // registers window
     this->regWinHeight = 5 + 6;
     this->regWinLen = COLS - this->stackWinLen - this->memoryWinLen;
     this->regWin = newwin(this->regWinHeight, this->regWinLen, 
             0, 0);
     box(this->regWin, 0, 0);
+    std::string regWinTitle = "REGISTERS";
+    mvwprintw(
+        this->regWin, 
+        1, 
+        (this->regWinLen - regWinTitle.length()) / 2, 
+        regWinTitle.c_str()
+    );
+
     // control window
     this->cntWinHeight = 3 + 6;
     this->cntWinLen = this->regWinLen;
@@ -31,6 +58,13 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
             this->regWinHeight, 0);
     box(this->controlWin, 0, 0);
     wrefresh(this->controlWin);
+    std::string cntWinTitle = "CONTROL";
+    mvwprintw(
+        this->controlWin, 
+        1, 
+        (this->cntWinLen - cntWinTitle.length()) / 2, 
+        cntWinTitle.c_str()
+    );
 }
 
 void emuTUI::start() {
