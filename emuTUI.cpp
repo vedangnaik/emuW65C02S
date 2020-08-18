@@ -126,7 +126,7 @@ void emuTUI::formatRegWin() {
     mvwprintw(this->regWin, 5, 3, 
         "%-*s%.2x", this->regWinLen - 8, "Y:", this->mp->Y);
     mvwprintw(this->regWin, 6, 3, 
-        "%-*s%.2x", this->regWinLen - 8, "Processor status:", this->mp->P);
+        "%-*s%.2x", this->regWinLen - 8, "Processor status:", this->mp->makePfromFlags());
     mvwprintw(this->regWin, 7, 3, 
         "%-*s%.2x", this->regWinLen - 8, "Stack pointer:", this->mp->S);
 

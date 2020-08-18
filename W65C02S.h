@@ -16,14 +16,26 @@ public:
     void reset();
     void run();
 
-    // internal registers
-    uint8_t IR;
-    uint8_t A;
-    uint8_t X;
-    uint8_t Y;
-    uint8_t P;
-    uint8_t S;
-    uint16_t PC;
+    uint8_t IR; // Instruction register
+    uint8_t A; // Accumulator
+    uint8_t X; // X register
+    uint8_t Y; // Y register
+    uint8_t S; // Stack pointer register
+    uint16_t PC; // Program coutner
+    // uint8_t P; // Processor status register. This register is not actually delclared since it's rebuiilt from the flags below anytime it's needed. This line it just for completion's sake 
+
+    // The W65C02S's flags. The flags are stored individually instead of in the format speficied by the processor status register since otherwise a lot of bitmasking and whatnot would be required for operations which need individual flags.
+    bool C; // Carry flag
+    bool Z; // Zero flag
+    bool I; // Interrupt request disable
+    bool D; // Decimal mode
+    bool B; // BRK command
+    bool V; // Overflow flag
+    bool N; // Negative flag
+
+    // functions to create the processor status register's value from the flags and vice versa.
+    uint8_t makePfromFlags();
+    void setFlagsFromP(uint8_t P);
 
 private:
     uint8_t* memory;

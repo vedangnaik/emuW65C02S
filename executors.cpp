@@ -5,14 +5,14 @@ void W65C02S::ADC(uint8_t opcode) {
         case 0x6D: {
             int addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            this->A = this->A + this->memory[addr] + (this->P & 0x01);
+            this->A = this->A + this->memory[addr] + this->C;
             break;
         } case 0x7D: {
             break; 
         } case 0x79: {
             break; 
         } case 0x69: { // add immediate value with carry
-            this->A = this->A + this->memory[++this->PC] + (this->P & 0x01);
+            this->A = this->A + this->memory[++this->PC] + this->C;
             break;
         } case 0x65: {
             break; 
@@ -226,7 +226,7 @@ void W65C02S::PHA(uint8_t opcode) {
 void W65C02S::PHP(uint8_t opcode) {
     switch (opcode) {
         case 0x08: {
-            this->memory[0x0100 + this->S] = this->P;
+            this->memory[0x0100 + this->S] = this->makePfromFlags();
             this->S--;
             break;
         } default: {
@@ -275,7 +275,7 @@ void W65C02S::PLP(uint8_t opcode) {
     switch (opcode) {
         case 0x28: {
             this->S++;
-            this->P = this->memory[0x0100 + this->S];
+            this->setFlagsFromP(this->memory[0x0100 + this->S]);
             break;
         } default: {
             std::cout << "invalid opcode for PLP" << std::endl;
