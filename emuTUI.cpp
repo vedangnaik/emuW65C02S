@@ -78,7 +78,6 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
         (this->flagsWinLen - flagsWinTitle.length()) / 2, 
         flagsWinTitle.c_str()
     );
-
 }
 
 void emuTUI::start() {
