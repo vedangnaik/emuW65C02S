@@ -9,7 +9,14 @@ add_library(
     W65C02S.h
     W65C02S.cpp
     decoder.cpp
-    executors.cpp)
+    executors.cpp
+)
+
+add_library(
+    emuTUILib STATIC
+    emuTUI.h
+    emuTUI.cpp
+)
 
 add_executable(emuW65C02S main.cpp)
-target_link_libraries(emuW65C02S W65C02SLib)
+target_link_libraries(emuW65C02S W65C02SLib emuTUILib ncurses pthread)

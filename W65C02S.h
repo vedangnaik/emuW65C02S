@@ -6,18 +6,15 @@
 #include <chrono>
 #include <thread>
 
-#define MAX_MEMSIZE 65536
+// Keep this above 0xFFFC lmao, otherwise the reset vector initialization segfaults
+#define MAX_MEMSIZE 65536 
 
 
 class W65C02S {
 public:
-    W65C02S(int clockSpeedinHz, uint8_t* RAMPtr);
+    W65C02S(uint8_t* memory);
     void reset();
     void run();
-
-private:
-    uint8_t* memory;
-    std::chrono::microseconds timeToWait;
 
     // internal registers
     uint8_t IR;
@@ -27,6 +24,9 @@ private:
     uint8_t P;
     uint8_t S;
     uint16_t PC;
+
+private:
+    uint8_t* memory;
 
     // opcodes to instruction hashmap - defined in decoder.cpp
     static std::map<uint8_t, void (W65C02S::*)(uint8_t)> decoder;
@@ -47,6 +47,10 @@ private:
     void PHP(uint8_t opcode);
     void PHX(uint8_t opcode);
     void PHY(uint8_t opcode);
+    void PLA(uint8_t opcode);
+    void PLP(uint8_t opcode);
+    void PLX(uint8_t opcode);
+    void PLY(uint8_t opcode);
     void ROL(uint8_t opcode);
     void ROR(uint8_t opcode);
     void STA(uint8_t opcode);

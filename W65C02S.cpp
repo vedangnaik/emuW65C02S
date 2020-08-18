@@ -1,8 +1,7 @@
 #include "W65C02S.h"
 
-W65C02S::W65C02S(int clockSpeedinHz, uint8_t* RAMPtr) {
-    this->timeToWait = std::chrono::microseconds(1000000 / clockSpeedinHz);
-    this->memory = RAMPtr;
+W65C02S::W65C02S(uint8_t* memory) {
+    this->memory = memory;
     this->reset();
 }
 
@@ -13,6 +12,9 @@ void W65C02S::reset() {
 }
 
 void W65C02S::run() {
+    // this->runnerThread = std::thread([this]() {
+        
+    // });
     while (1) {
         // fetch instruction
         this->IR = this->memory[this->PC];
@@ -22,8 +24,8 @@ void W65C02S::run() {
         executor = this->decoder[this->IR];
         // execute instruction
         (this->*(executor))(this->IR);
-        // print out A register's value for now
-        std::cout << "S: " << (int)this->S << std::endl;
+        // delay for dev work
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         // increment PC
         this->PC++;
     }
