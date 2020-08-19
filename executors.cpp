@@ -169,26 +169,28 @@ void W65C02S::LDA(uint8_t opcode) { // TODO: FLAGS
         case 0xAD: { 
             break;
         } case 0xBD: {
-            break; 
+            break;
         } case 0xB9: {
-            break; 
+            break;
         } case 0xA9: { // immediate load
             this->A = this->memory[++this->PC];
-            break; 
+            break;
         } case 0xA5: {
-            break; 
+            break;
         } case 0xA1: {
-            break; 
+            break;
         } case 0xB5: {
-            break; 
+            break;
         } case 0xB2: {
-            break; 
+            break;
         } case 0xB1: {
-            break; 
+            break;
         } default: {
             std::cout << "invalid opcode for LDA" << std::endl;
         }
     }
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
 }
 
 void W65C02S::LDX(uint8_t opcode) { // TODO: FLAGS
@@ -211,6 +213,8 @@ void W65C02S::LDX(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for LDX" << std::endl;
         }
     }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
 }
 
 void W65C02S::LDY(uint8_t opcode) { // TODO: FLAGS
@@ -233,6 +237,8 @@ void W65C02S::LDY(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for LDY" << std::endl;
         }
     }
+    this->Z = this->Y == 0;
+    this->N = (bool)(this->Y & 0x80);
 }
 
 void W65C02S::NOP(uint8_t opcode) {
@@ -297,6 +303,8 @@ void W65C02S::PLA(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for PLA" << std::endl;
         }
     }
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
 }
 
 void W65C02S::PLP(uint8_t opcode) { // TODO: FLAGS
@@ -321,6 +329,8 @@ void W65C02S::PLX(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for PLX" << std::endl;
         }
     }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
 }
 
 void W65C02S::PLY(uint8_t opcode) { // TODO: FLAGS
@@ -333,6 +343,8 @@ void W65C02S::PLY(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for PLY" << std::endl;
         }
     }
+    this->Z = this->Y == 0;
+    this->N = (bool)(this->Y & 0x80);
 }
 
 void W65C02S::ROL(uint8_t opcode) { // TODO: FLAGS
