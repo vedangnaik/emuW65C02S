@@ -39,22 +39,23 @@ void W65C02S::ADC(uint8_t opcode) { // TODO: FLAGS
     this->C = res > 255;
     this->Z = res == 0;
     this->V = (bool)((M ^ res) & (N ^ res) & 0x80); 
-    this->N = (bool)(res & 0x0080);
+    this->N = (bool)(res & 0x80);
     // set accumulator value
     this->A = res;
 }
 
 void W65C02S::DEC(uint8_t opcode) { // TODO: FLAGS
+    uint8_t res;
     switch (opcode) {
         case 0xCE: {   // decrement absolute address
             int addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            this->memory[addr]--;
+            res = --this->memory[addr];
             break;
         } case 0xDE: {
             break; 
         } case 0x3A: { // decrement register A
-            this->A--;
+            res = --this->A;
             break; 
         } case 0xC6: { 
             break; 
@@ -64,6 +65,8 @@ void W65C02S::DEC(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for DEC" << std::endl;
         }
     }
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::DEX(uint8_t opcode) { // TODO: FLAGS
@@ -75,6 +78,8 @@ void W65C02S::DEX(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for DEX" << std::endl;
         }
     }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
 }
 
 void W65C02S::DEY(uint8_t opcode) { // TODO: FLAGS
@@ -86,19 +91,22 @@ void W65C02S::DEY(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for DEY" << std::endl;
         }
     }
+    this->Z = this->Y == 0;
+    this->N = (bool)(this->Y & 0x80);
 }
 
 void W65C02S::INC(uint8_t opcode) { // TODO: FLAGS
+    uint8_t res;
     switch (opcode) {
         case 0xEE: {   // increment absolute address
             int addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            this->memory[addr]++;
+            res = ++this->memory[addr];
             break;
         } case 0xFE: {
             break; 
         } case 0x1A: { // increment register A
-            this->A++;
+            res = ++this->A;
             break; 
         } case 0xE6: { 
             break; 
@@ -108,6 +116,8 @@ void W65C02S::INC(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for INC" << std::endl;
         }
     }
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::INX(uint8_t opcode) { // TODO: FLAGS
@@ -119,6 +129,8 @@ void W65C02S::INX(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for INX" << std::endl;
         }
     }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
 }
 
 void W65C02S::INY(uint8_t opcode) { // TODO: FLAGS
@@ -130,6 +142,8 @@ void W65C02S::INY(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for INY" << std::endl;
         }
     }
+    this->Z = this->Y == 0;
+    this->N = (bool)(this->Y & 0x80);
 }
 
 void W65C02S::JMP(uint8_t opcode) {
