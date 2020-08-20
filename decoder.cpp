@@ -41,6 +41,8 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xC8, &W65C02S::INY},
     // JMP: Jump unconditionally
     {0x4C, &W65C02S::JMP},
+    // JSR: Jump to subroutine
+    {0x20, &W65C02S::JSR},
     // LDA: Load register A
     {0xAD, &W65C02S::LDA},
     {0xBD, &W65C02S::LDA},
@@ -87,6 +89,8 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x6A, &W65C02S::ROR},
     {0x66, &W65C02S::ROR},
     {0x76, &W65C02S::ROR},
+    // RTS: Return from subroutine
+    {0x60, &W65C02S::RTS},
     // SEC: Set carry flag
     {0x38, &W65C02S::SEC},
     // SED: Set decimal mode flag

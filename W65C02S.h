@@ -56,6 +56,7 @@ private:
     void INX(uint8_t opcode);
     void INY(uint8_t opcode);
     void JMP(uint8_t opcode);
+    void JSR(uint8_t opcode);
     void LDA(uint8_t opcode);
     void LDX(uint8_t opcode);
     void LDY(uint8_t opcode);
@@ -70,6 +71,7 @@ private:
     void PLY(uint8_t opcode);
     void ROL(uint8_t opcode);
     void ROR(uint8_t opcode);
+    void RTS(uint8_t opcode);
     void SEC(uint8_t opcode);
     void SED(uint8_t opcode);
     void SEI(uint8_t opcode);
