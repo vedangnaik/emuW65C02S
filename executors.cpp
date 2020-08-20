@@ -215,10 +215,11 @@ void W65C02S::JSR(uint8_t opcode) {
             subroutineAddr += this->memory[++this->PC] << 8;
             // push current PC value to stack (this is the point to return to)
             // the 6502 reportedly pushed the location of the next address - 1 to the stack. Here, there's no need to do - 1 since the PC hasn't been incremented; the next instruction is at at PC++;
-            this->memory[this->S++] = this->PC >> 8;
-            this->memory[this->S++] = this->PC & 0x00FF;
+            this->memory[this->S--] = this->PC >> 8;
+            this->memory[this->S--] = this->PC & 0x00FF;
             // As for JMP, the - 1 is because the main loop will increment PC.
             this->PC = subroutineAddr - 1;
+            break;
         } default: {
             std::cout << "invalid opcode for JSR" << std::endl;
         }
@@ -474,6 +475,7 @@ void W65C02S::RTS(uint8_t opcode) {
             returnAddr += this->memory[++this->S] << 8;
             // The 6502 reportedly did returnAddr + 1 before ending. Here, there's no need to do that since the main loop will increment PC before decoding the next instruction.
             this->PC = returnAddr;
+            break;
         } default: {
             std::cout << "invalid opcode for RTS" << std::endl;
         }

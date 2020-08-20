@@ -117,7 +117,7 @@ void emuTUI::formatStackWin() {
 
             line << " ";
             line << std::setfill('0') << std::setw(2) 
-                    << std::hex << (addr & 0x00FF);
+                    << std::hex << addr;
             line << ": ";
             if (addr > this->mp->S) { // stack pointer
                 line << std::setfill('0') << std::setw(2) 
