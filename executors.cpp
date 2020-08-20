@@ -44,6 +44,50 @@ void W65C02S::ADC(uint8_t opcode) {
     this->A = res;
 }
 
+void W65C02S::CLC(uint8_t opcode) {
+    switch (opcode) {
+        case 0x18: {
+            this->C = false;
+            break;
+        } default: {
+            std::cout << "invalid opcode for CLC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::CLD(uint8_t opcode) {
+    switch (opcode) {
+        case 0xD8: {
+            this->D = false;
+            break;
+        } default: {
+            std::cout << "invalid opcode for CLD" << std::endl;
+        }
+    }
+}
+
+void W65C02S::CLI(uint8_t opcode) {
+    switch (opcode) {
+        case 0x58: {
+            this->I = false;
+            break;
+        } default: {
+            std::cout << "invalid opcode for CLI" << std::endl;
+        }
+    }
+}
+
+void W65C02S::CLV(uint8_t opcode) {
+    switch (opcode) {
+        case 0xB8: {
+            this->V = false;
+            break;
+        } default: {
+            std::cout << "invalid opcode for CLV" << std::endl;
+        }
+    }
+}
+
 void W65C02S::DEC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
@@ -403,6 +447,36 @@ void W65C02S::ROR(uint8_t opcode) {
     }
     this->Z = res == 0;
     this->N = (bool)(res & 0x80);
+}
+
+void W65C02S::SEC(uint8_t opcode) {
+    switch (opcode) {
+        case 0x38: {
+            this->C = true;
+        } default: {
+            std::cout << "invalid opcode for SEC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::SED(uint8_t opcode) {
+    switch (opcode) {
+        case 0xF8: {
+            this->D = true;
+        } default: {
+            std::cout << "invalid opcode for SED" << std::endl;
+        }
+    }
+}
+
+void W65C02S::SEI(uint8_t opcode) {
+    switch (opcode) {
+        case 0x78: {
+            this->I = true;
+        } default: {
+            std::cout << "invalid opcode for SEI" << std::endl;
+        }
+    }
 }
 
 void W65C02S::STA(uint8_t opcode) {

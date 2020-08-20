@@ -45,6 +45,10 @@ private:
 
     // instruction executors - all defined in executors.cpp
     void ADC(uint8_t opcode);
+    void CLC(uint8_t opcode);
+    void CLD(uint8_t opcode);
+    void CLI(uint8_t opcode);
+    void CLV(uint8_t opcode);
     void DEC(uint8_t opcode);
     void DEX(uint8_t opcode);
     void DEY(uint8_t opcode);
@@ -66,6 +70,9 @@ private:
     void PLY(uint8_t opcode);
     void ROL(uint8_t opcode);
     void ROR(uint8_t opcode);
+    void SEC(uint8_t opcode);
+    void SED(uint8_t opcode);
+    void SEI(uint8_t opcode);
     void STA(uint8_t opcode);
     void STX(uint8_t opcode);
     void STY(uint8_t opcode);

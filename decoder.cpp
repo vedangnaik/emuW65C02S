@@ -11,6 +11,14 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x75, &W65C02S::ADC},
     {0x72, &W65C02S::ADC},
     {0x71, &W65C02S::ADC},
+    // CLC: Clear carry flag
+    {0x18, &W65C02S::CLC},
+    // CLD: Clear decimal mode flag
+    {0x18, &W65C02S::CLD},
+    // CLI: Clear interrupt disable flag
+    {0x18, &W65C02S::CLI},
+    // CLV: Clear overflow flag
+    {0x18, &W65C02S::CLV},
     // DEC: Decrement memory or register A
     {0xCE, &W65C02S::DEC},
     {0xDE, &W65C02S::DEC},
@@ -79,8 +87,12 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x6A, &W65C02S::ROR},
     {0x66, &W65C02S::ROR},
     {0x76, &W65C02S::ROR},
-    // STA: Store register A
-    {0x8D, &W65C02S::STA},
+    // SEC: Set carry flag
+    {0x38, &W65C02S::SEC},
+    // SED: Set decimal mode flag
+    {0xF8, &W65C02S::SED},
+    // SEI: Set interrupt disable flag
+    {0x78, &W65C02S::SEI},
     // STX: Store register X
     {0x8E, &W65C02S::STX},
     {0x86, &W65C02S::STX},
