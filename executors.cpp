@@ -215,8 +215,8 @@ void W65C02S::JSR(uint8_t opcode) {
             subroutineAddr += this->memory[++this->PC] << 8;
             // push current PC value to stack (this is the point to return to)
             // the 6502 reportedly pushed the location of the next address - 1 to the stack. Here, there's no need to do - 1 since the PC hasn't been incremented; the next instruction is at at PC++;
-            this->memory[this->S--] = this->PC >> 8;
-            this->memory[this->S--] = this->PC & 0x00FF;
+            this->memory[0x0100 + (this->S--)] = this->PC >> 8;
+            this->memory[0x0100 + (this->S--)] = this->PC & 0x00FF;
             // As for JMP, the - 1 is because the main loop will increment PC.
             this->PC = subroutineAddr - 1;
             break;
@@ -471,8 +471,8 @@ void W65C02S::RTS(uint8_t opcode) {
     switch (opcode) {
         case 0x60: {
             // This assumes that the return address is the topmost 16-bits on the stack currently. If someone's left some stuff there, it'll fail.
-            uint16_t returnAddr = this->memory[++this->S];
-            returnAddr += this->memory[++this->S] << 8;
+            uint16_t returnAddr = this->memory[0x0100 + (++this->S)];
+            returnAddr += this->memory[0x0100 + (++this->S)] << 8;
             // The 6502 reportedly did returnAddr + 1 before ending. Here, there's no need to do that since the main loop will increment PC before decoding the next instruction.
             this->PC = returnAddr;
             break;
