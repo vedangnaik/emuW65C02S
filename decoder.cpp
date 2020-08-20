@@ -11,6 +11,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x75, &W65C02S::ADC},
     {0x72, &W65C02S::ADC},
     {0x71, &W65C02S::ADC},
+    // AND: Bitwise AND memory with accumulator
+    {0x2D, &W65C02S::AND},
+    {0x3D, &W65C02S::AND},
+    {0x39, &W65C02S::AND},
+    {0x29, &W65C02S::AND},
+    {0x25, &W65C02S::AND},
+    {0x21, &W65C02S::AND},
+    {0x35, &W65C02S::AND},
+    {0x32, &W65C02S::AND},
+    {0x31, &W65C02S::AND},
     // CLC: Clear carry flag
     {0x18, &W65C02S::CLC},
     // CLD: Clear decimal mode flag
@@ -91,6 +101,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x76, &W65C02S::ROR},
     // RTS: Return from subroutine
     {0x60, &W65C02S::RTS},
+    // SBC: Subtract with carry
+    {0xED, &W65C02S::SBC},
+    {0xFD, &W65C02S::SBC},
+    {0xF9, &W65C02S::SBC},
+    {0xE9, &W65C02S::SBC},
+    {0xE5, &W65C02S::SBC},
+    {0xE1, &W65C02S::SBC},
+    {0xF5, &W65C02S::SBC},
+    {0xF2, &W65C02S::SBC},
+    {0xF1, &W65C02S::SBC},
     // SEC: Set carry flag
     {0x38, &W65C02S::SEC},
     // SED: Set decimal mode flag

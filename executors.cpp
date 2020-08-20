@@ -8,7 +8,7 @@ void W65C02S::ADC(uint8_t opcode) {
     uint16_t res;
     switch (opcode) {  // add absolute address with carry
         case 0x6D: {
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             N = this->memory[addr];
             break;
@@ -42,6 +42,40 @@ void W65C02S::ADC(uint8_t opcode) {
     this->N = (bool)(res & 0x80);
     // set accumulator value
     this->A = res;
+}
+
+void W65C02S::AND(uint8_t opcode) {
+    uint8_t res;
+    switch (opcode) {
+        case 0x2D: { // AND absolute address
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            res = this->A & this->memory[addr];
+            break;
+        } case 0x3D: {
+            break; 
+        } case 0x39: {
+            break; 
+        } case 0x29: { // AND immediate value
+            res = this->A & this->memory[++this->PC];
+            break; 
+        } case 0x25: {
+            break; 
+        } case 0x21: {
+            break; 
+        } case 0x35: {
+            break; 
+        } case 0x32: {
+            break; 
+        } case 0x31: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for AND" << std::endl;
+        }
+    }
+    this->A = res;
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::CLC(uint8_t opcode) {
@@ -92,7 +126,7 @@ void W65C02S::DEC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0xCE: {   // decrement absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             res = --this->memory[addr];
             break;
@@ -143,7 +177,7 @@ void W65C02S::INC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0xEE: {   // increment absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             res = ++this->memory[addr];
             break;
@@ -193,7 +227,7 @@ void W65C02S::INY(uint8_t opcode) {
 void W65C02S::JMP(uint8_t opcode) {
     switch (opcode) {
         case 0x4C: {   // jump to absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             // The -1 is because the main loop will increment the PC by one, to the correct position.
             this->PC = addr - 1;
@@ -258,7 +292,7 @@ void W65C02S::LDA(uint8_t opcode) {
 void W65C02S::LDX(uint8_t opcode) {
     switch (opcode) {
         case 0xAE: {   // absolute address load
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->X = this->memory[addr]; 
             break;
@@ -282,7 +316,7 @@ void W65C02S::LDX(uint8_t opcode) {
 void W65C02S::LDY(uint8_t opcode) {
     switch (opcode) {
         case 0xAC: {   // absolute address load
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->Y = this->memory[addr]; 
             break;
@@ -413,7 +447,7 @@ void W65C02S::ROL(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0x2E: {   // absolute rotate left 
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->C = (bool)(this->memory[addr] & 0x80);
             res = (this->memory[addr] << 1) | this->C;
@@ -442,7 +476,7 @@ void W65C02S::ROR(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0x6E: {   // absolute rotate left 
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->C = (bool)(this->memory[addr] & 0x01);
             res = (this->memory[addr] >> 1) | this->C;
@@ -482,6 +516,50 @@ void W65C02S::RTS(uint8_t opcode) {
     }
 }
 
+void W65C02S::SBC(uint8_t opcode) {
+    // Values needed to calculate the flags
+    // res = M - N - (~carry)
+    uint8_t M = this->A;
+    uint8_t N;
+    uint16_t res;
+    switch (opcode) {  // add absolute address with carry
+        case 0xED: {
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            N = this->memory[addr];
+            break;
+        } case 0xFD: {
+            break; 
+        } case 0xF9: {
+            break; 
+        } case 0xE9: { // add immediate value with carry
+            N = this->memory[++this->PC];
+            break;
+        } case 0xE5: {
+            break; 
+        } case 0xE1: {
+            break; 
+        } case 0xF5: {
+            break; 
+        } case 0xF2: {
+            break; 
+        } case 0xF1: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for SBC" << std::endl;
+        }
+    }
+    // calculate intermediate values
+    res = M - N - (!this->C);
+    // set flags
+    this->C = res > 255;
+    this->Z = res == 0;
+    this->V = (bool)((M ^ res) & (N ^ res) & 0x80); 
+    this->N = (bool)(res & 0x80);
+    // set accumulator value
+    this->A = res;
+}
+
 void W65C02S::SEC(uint8_t opcode) {
     switch (opcode) {
         case 0x38: {
@@ -515,7 +593,7 @@ void W65C02S::SEI(uint8_t opcode) {
 void W65C02S::STA(uint8_t opcode) {
     switch (opcode) {
         case 0x8D: {   // store at absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->memory[addr] = this->A;
             break;
@@ -544,7 +622,7 @@ void W65C02S::STA(uint8_t opcode) {
 void W65C02S::STX(uint8_t opcode) {
     switch (opcode) {
         case 0x8E: {   // store at absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->memory[addr] = this->X;
             break;
@@ -561,7 +639,7 @@ void W65C02S::STX(uint8_t opcode) {
 void W65C02S::STY(uint8_t opcode) {
     switch (opcode) {
         case 0x8C: {   // store at absolute address
-            int addr = this->memory[++this->PC];
+            uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
             this->memory[addr] = this->Y;
             break;
