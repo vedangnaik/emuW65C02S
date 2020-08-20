@@ -1,6 +1,6 @@
 #include "W65C02S.h"
 
-void W65C02S::ADC(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::ADC(uint8_t opcode) {
     // Values needed to calculate the flags
     // res = M + N + carry
     uint8_t M = this->A;
@@ -44,7 +44,7 @@ void W65C02S::ADC(uint8_t opcode) { // TODO: FLAGS
     this->A = res;
 }
 
-void W65C02S::DEC(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::DEC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0xCE: {   // decrement absolute address
@@ -69,7 +69,7 @@ void W65C02S::DEC(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(res & 0x80);
 }
 
-void W65C02S::DEX(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::DEX(uint8_t opcode) {
     switch (opcode) {
         case 0xCA: {
             this->X--;
@@ -82,7 +82,7 @@ void W65C02S::DEX(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->X & 0x80);
 }
 
-void W65C02S::DEY(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::DEY(uint8_t opcode) {
     switch (opcode) {
         case 0x88: {
             this->Y--;
@@ -95,7 +95,7 @@ void W65C02S::DEY(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->Y & 0x80);
 }
 
-void W65C02S::INC(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::INC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
         case 0xEE: {   // increment absolute address
@@ -120,7 +120,7 @@ void W65C02S::INC(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(res & 0x80);
 }
 
-void W65C02S::INX(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::INX(uint8_t opcode) {
     switch (opcode) {
         case 0xE8: {
             this->X++;
@@ -133,7 +133,7 @@ void W65C02S::INX(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->X & 0x80);
 }
 
-void W65C02S::INY(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::INY(uint8_t opcode) {
     switch (opcode) {
         case 0xC8: {
             this->Y++;
@@ -164,7 +164,7 @@ void W65C02S::JMP(uint8_t opcode) {
     }
 }
 
-void W65C02S::LDA(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::LDA(uint8_t opcode) {
     switch (opcode) {
         case 0xAD: { 
             break;
@@ -193,7 +193,7 @@ void W65C02S::LDA(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->A & 0x80);
 }
 
-void W65C02S::LDX(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::LDX(uint8_t opcode) {
     switch (opcode) {
         case 0xAE: {   // absolute address load
             int addr = this->memory[++this->PC];
@@ -217,7 +217,7 @@ void W65C02S::LDX(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->X & 0x80);
 }
 
-void W65C02S::LDY(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::LDY(uint8_t opcode) {
     switch (opcode) {
         case 0xAC: {   // absolute address load
             int addr = this->memory[++this->PC];
@@ -293,7 +293,7 @@ void W65C02S::PHY(uint8_t opcode) {
     }
 }
 
-void W65C02S::PLA(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::PLA(uint8_t opcode) {
     switch (opcode) {
         case 0x68: {
             this->S++;
@@ -307,7 +307,7 @@ void W65C02S::PLA(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->A & 0x80);
 }
 
-void W65C02S::PLP(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::PLP(uint8_t opcode) {
     switch (opcode) {
         case 0x28: {
             this->S++;
@@ -319,7 +319,7 @@ void W65C02S::PLP(uint8_t opcode) { // TODO: FLAGS
     }
 }
 
-void W65C02S::PLX(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::PLX(uint8_t opcode) {
     switch (opcode) {
         case 0xFA: {
             this->S++;
@@ -333,7 +333,7 @@ void W65C02S::PLX(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->X & 0x80);
 }
 
-void W65C02S::PLY(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::PLY(uint8_t opcode) {
     switch (opcode) {
         case 0x7A: {
             this->S++;
@@ -347,43 +347,51 @@ void W65C02S::PLY(uint8_t opcode) { // TODO: FLAGS
     this->N = (bool)(this->Y & 0x80);
 }
 
-void W65C02S::ROL(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::ROL(uint8_t opcode) {
+    uint8_t res;
     switch (opcode) {
         case 0x2E: {   // absolute rotate left 
             int addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            uint8_t value = this->memory[addr];
-            this->memory[addr] = ((value & 0x80) >> 7) | (value << 1);
+            this->C = (bool)(this->memory[addr] & 0x80);
+            res = (this->memory[addr] << 1) | this->C;
+            this->memory[addr] = res;
             break;
         } case 0x3E: {
-            break; 
+            break;
         } case 0x2A: { // register A rotate left
-            uint8_t value = this->A;
-            this->A = ((value & 0x80) >> 7) | (value << 1);
-            break; 
+            this->C = (bool)(this->A & 0x80);
+            res = (this->A << 1) | this->C;
+            this->A = res;
+            break;
         } case 0x26: { 
-            break; 
+            break;
         } case 0x36: {
-            break; 
+            break;
         } default: {
             std::cout << "invalid opcode for ROL" << std::endl;
         }
     }
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
-void W65C02S::ROR(uint8_t opcode) { // TODO: FLAGS
+void W65C02S::ROR(uint8_t opcode) {
+    uint8_t res;
     switch (opcode) {
         case 0x6E: {   // absolute rotate left 
             int addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            uint8_t value = this->memory[addr];
-            this->memory[addr] = ((value & 0x01) << 7) | (value >> 1);
+            this->C = (bool)(this->memory[addr] & 0x01);
+            res = (this->memory[addr] >> 1) | this->C;
+            this->memory[addr] = res;
             break;
         } case 0x7E: {
             break; 
         } case 0x6A: { // register A rotate left
-            uint8_t value = this->A;
-            this->A = ((value & 0x01) << 7) | (value >> 1);
+            this->C = (bool)(this->A & 0x01);
+            res = (this->A >> 1) | this->C;
+            this->A = res;
             break; 
         } case 0x66: { 
             break; 
@@ -393,6 +401,8 @@ void W65C02S::ROR(uint8_t opcode) { // TODO: FLAGS
             std::cout << "invalid opcode for ROR" << std::endl;
         }
     }
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::STA(uint8_t opcode) {
