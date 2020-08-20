@@ -125,4 +125,8 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x8C, &W65C02S::STY},
     {0x84, &W65C02S::STY},
     {0x94, &W65C02S::STY},
+    // TXA: Transfer X register to accumulator
+    {0x8A, &W65C02S::TXA},
+    // TYA: Transfer Y register to accumulator
+    {0x98, &W65C02S::TYA}
 };

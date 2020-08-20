@@ -652,3 +652,29 @@ void W65C02S::STY(uint8_t opcode) {
         }
     }
 }
+
+void W65C02S::TXA(uint8_t opcode) {
+    switch (opcode) {
+        case 0x8A: {
+            this->A = this->X;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TAX" << std::endl;
+        }
+    }
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
+}
+
+void W65C02S::TYA(uint8_t opcode) {
+    switch (opcode) {
+        case 0x98: {
+            this->A = this->Y;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TAY" << std::endl;
+        }
+    }
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
+}

@@ -80,6 +80,8 @@ private:
     void STA(uint8_t opcode);
     void STX(uint8_t opcode);
     void STY(uint8_t opcode);
+    void TXA(uint8_t opcode);
+    void TYA(uint8_t opcode);
 };
 
 #endif
