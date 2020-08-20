@@ -122,6 +122,49 @@ void W65C02S::CLV(uint8_t opcode) {
     }
 }
 
+void W65C02S::CMP(uint8_t opcode) {
+    // The CMP instruction performs a subtraction without carry internally, so the flag has been set to true (SBC will use it's inverse)
+    this->C = true;
+    // setting up intermediate values for subtraction
+    uint8_t M = this->A;
+    uint8_t N;
+    uint16_t res;
+    switch (opcode) {
+        case 0xCD: { // compare absolute address with accumulator
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            res = this->A & this->memory[addr];
+            break;
+        } case 0xDD: {
+            break; 
+        } case 0xD9: {
+            break; 
+        } case 0xC9: { // compare immediate value with accumulator
+            N = this->memory[++this->PC];
+            break; 
+        } case 0xC5: {
+            break;
+        } case 0xC1: {
+            break; 
+        } case 0xD5: {
+            break; 
+        } case 0xD2: {
+            break; 
+        } case 0xD1: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for CMP" << std::endl;
+        }
+    }
+    // The ~this->C has been left off since it's zero anyway.
+    res = M - N;
+    // the flags are set in the same was as SBC does.
+    this->C = res <= 255;
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
+    // res is discarded, leaving all memory locations and registers untouched.
+}
+
 void W65C02S::DEC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
@@ -552,7 +595,7 @@ void W65C02S::SBC(uint8_t opcode) {
     // calculate intermediate values
     res = M - N - (!this->C);
     // set flags
-    this->C = res > 255;
+    this->C = res <= 255;
     this->Z = res == 0;
     this->V = (bool)((M ^ res) & (N ^ res) & 0x80); 
     this->N = (bool)(res & 0x80);
@@ -564,6 +607,7 @@ void W65C02S::SEC(uint8_t opcode) {
     switch (opcode) {
         case 0x38: {
             this->C = true;
+            break;
         } default: {
             std::cout << "invalid opcode for SEC" << std::endl;
         }
@@ -574,6 +618,7 @@ void W65C02S::SED(uint8_t opcode) {
     switch (opcode) {
         case 0xF8: {
             this->D = true;
+            break;
         } default: {
             std::cout << "invalid opcode for SED" << std::endl;
         }
@@ -584,6 +629,7 @@ void W65C02S::SEI(uint8_t opcode) {
     switch (opcode) {
         case 0x78: {
             this->I = true;
+            break;
         } default: {
             std::cout << "invalid opcode for SEI" << std::endl;
         }

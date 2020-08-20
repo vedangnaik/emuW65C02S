@@ -29,6 +29,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x18, &W65C02S::CLI},
     // CLV: Clear overflow flag
     {0x18, &W65C02S::CLV},
+    // CMP: Compare memory with accumulator
+    {0xCD, &W65C02S::CMP},
+    {0xDD, &W65C02S::CMP},
+    {0xD9, &W65C02S::CMP},
+    {0xC9, &W65C02S::CMP},
+    {0xC5, &W65C02S::CMP},
+    {0xC1, &W65C02S::CMP},
+    {0xD5, &W65C02S::CMP},
+    {0xD2, &W65C02S::CMP},
+    {0xD1, &W65C02S::CMP},
     // DEC: Decrement memory or register A
     {0xCE, &W65C02S::DEC},
     {0xDE, &W65C02S::DEC},
