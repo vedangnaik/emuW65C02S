@@ -39,6 +39,14 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xD5, &W65C02S::CMP},
     {0xD2, &W65C02S::CMP},
     {0xD1, &W65C02S::CMP},
+    // CPX: Compare memory with register X
+    {0xEC, &W65C02S::CPX},
+    {0xE0, &W65C02S::CPX},
+    {0xE4, &W65C02S::CPX},
+    // CPY: Compare memory with register Y
+    {0xCC, &W65C02S::CPY},
+    {0xC0, &W65C02S::CPY},
+    {0xC4, &W65C02S::CPY},
     // DEC: Decrement memory or register A
     {0xCE, &W65C02S::DEC},
     {0xDE, &W65C02S::DEC},

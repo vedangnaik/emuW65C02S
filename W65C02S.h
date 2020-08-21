@@ -51,6 +51,8 @@ private:
     void CLI(uint8_t opcode);
     void CLV(uint8_t opcode);
     void CMP(uint8_t opcode);
+    void CPX(uint8_t opcode);
+    void CPY(uint8_t opcode);
     void DEC(uint8_t opcode);
     void DEX(uint8_t opcode);
     void DEY(uint8_t opcode);

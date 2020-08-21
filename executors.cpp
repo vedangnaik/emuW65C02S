@@ -123,8 +123,6 @@ void W65C02S::CLV(uint8_t opcode) {
 }
 
 void W65C02S::CMP(uint8_t opcode) {
-    // The CMP instruction performs a subtraction without carry internally, so the flag has been set to true (SBC will use it's inverse)
-    this->C = true;
     // setting up intermediate values for subtraction
     uint8_t M = this->A;
     uint8_t N;
@@ -133,7 +131,7 @@ void W65C02S::CMP(uint8_t opcode) {
         case 0xCD: { // compare absolute address with accumulator
             uint16_t addr = this->memory[++this->PC];
             addr += this->memory[++this->PC] << 8;
-            res = this->A & this->memory[addr];
+            N = this->memory[addr];
             break;
         } case 0xDD: {
             break; 
@@ -156,13 +154,63 @@ void W65C02S::CMP(uint8_t opcode) {
             std::cout << "invalid opcode for CMP" << std::endl;
         }
     }
-    // The ~this->C has been left off since it's zero anyway.
+    // Internally, CMP performs a subtraction without borrow.
     res = M - N;
     // the flags are set in the same was as SBC does.
     this->C = res <= 255;
     this->Z = res == 0;
     this->N = (bool)(res & 0x80);
     // res is discarded, leaving all memory locations and registers untouched.
+}
+
+void W65C02S::CPX(uint8_t opcode) {
+    uint8_t M = this->X;
+    uint8_t N;
+    uint16_t res;
+    switch (opcode) {
+        case 0xEC: { // compare absolute address with register X
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            N = this->memory[addr];
+            break;
+        } case 0xE0: { // compare immediate value with register X
+            N = this->memory[++this->PC];
+            break; 
+        } case 0xE4: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for CPX" << std::endl;
+        }
+    }
+    res = M - N;
+    this->C = res <= 255;
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
+}
+
+void W65C02S::CPY(uint8_t opcode) {
+    uint8_t M = this->Y;
+    uint8_t N;
+    uint16_t res;
+    switch (opcode) {
+        case 0xCC: { // compare absolute address with register Y
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            N = this->memory[addr];
+            break;
+        } case 0xC0: { // compare immediate value with register Y
+            N = this->memory[++this->PC];
+            break; 
+        } case 0xC4: {
+            break; 
+        } default: {
+            std::cout << "invalid opcode for CPY" << std::endl;
+        }
+    }
+    res = M - N;
+    this->C = res <= 255;
+    this->Z = res == 0;
+    this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::DEC(uint8_t opcode) {
