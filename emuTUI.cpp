@@ -78,6 +78,20 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
         (this->flagsWinLen - flagsWinTitle.length()) / 2, 
         flagsWinTitle.c_str()
     );
+
+    // screen window
+    this->screenWinHeight = LINES - this->regWinHeight - this->cntWinHeight - this->flagsWinHeight;
+    this->screenWinLen = this->regWinLen;
+    this->screenWin = newwin(this->screenWinHeight, this->screenWinLen, 
+        LINES - this->screenWinHeight, 0);
+    box(this->screenWin, 0, 0);
+    std::string screenWinTitle = "SCREEN";
+    mvwprintw(
+        this->screenWin,
+        1,
+        (this->screenWinLen - screenWinTitle.length()) / 2,
+        screenWinTitle.c_str()
+    );
 }
 
 void emuTUI::start() {
@@ -88,6 +102,7 @@ void emuTUI::start() {
             this->formatRegWin();
             this->formatControlWin();
             this->formatFlagsWin();
+            this->formatScreenWin();
         }
     });
 }
@@ -174,4 +189,8 @@ void emuTUI::formatFlagsWin() {
         "%-*s%.1d", this->flagsWinLen - 7, "Negative:", this->mp->N);
 
     wrefresh(this->flagsWin);
+}
+
+void emuTUI::formatScreenWin() {
+    wrefresh(this->screenWin);
 }
