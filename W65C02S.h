@@ -46,6 +46,9 @@ private:
     // instruction executors - all defined in executors.cpp
     void ADC(uint8_t opcode);
     void AND(uint8_t opcode);
+    void BCC(uint8_t opcode);
+    void BCS(uint8_t opcode);
+    void BEQ(uint8_t opcode);
     void CLC(uint8_t opcode);
     void CLD(uint8_t opcode);
     void CLI(uint8_t opcode);

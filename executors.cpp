@@ -78,6 +78,49 @@ void W65C02S::AND(uint8_t opcode) {
     this->N = (bool)(res & 0x80);
 }
 
+void W65C02S::BCC(uint8_t opcode) {
+    switch (opcode) {
+        case 0x90: {
+            // BCC uses relative mode addressing for setting the PC 
+            uint8_t offset = this->memory[++this->PC];
+            if (!this->C) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BCC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BCS(uint8_t opcode) {
+    switch (opcode) {
+        case 0xB0: {
+            uint8_t offset = this->memory[++this->PC];
+            if (this->C) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BCS" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BEQ(uint8_t opcode) {
+    switch (opcode) {
+        case 0xF0: {
+            uint8_t offset = this->memory[++this->PC];
+            if (this->Z) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BEQ" << std::endl;
+        }
+    }
+}
+
 void W65C02S::CLC(uint8_t opcode) {
     switch (opcode) {
         case 0x18: {

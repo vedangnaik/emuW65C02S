@@ -21,6 +21,12 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x35, &W65C02S::AND},
     {0x32, &W65C02S::AND},
     {0x31, &W65C02S::AND},
+    // BCC: Branch if carry = 0
+    {0x90, &W65C02S::BCC},
+    // BCS: Branch if carry = 1
+    {0xB0, &W65C02S::BCS},
+    // BEQ: Branch if zero = 1
+    {0xF0, &W65C02S::BEQ},
     // CLC: Clear carry flag
     {0x18, &W65C02S::CLC},
     // CLD: Clear decimal mode flag
