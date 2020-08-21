@@ -2,12 +2,14 @@
 #define W65C02S_H
 
 #include <iostream>
+#include <sstream>
 #include <map>
 #include <chrono>
 #include <thread>
 
 // Keep this above 0xFFFC lmao, otherwise the reset vector initialization segfaults
-#define MAX_MEMSIZE 65536 
+#define MAX_MEMSIZE 65536
+extern std::stringstream scrout;
 
 
 class W65C02S {

@@ -1,5 +1,7 @@
 #include "emuTUI.h"
 
+std::stringstream scrout;
+
 emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     this->memory = memory;
     this->mp = mp;
@@ -192,5 +194,7 @@ void emuTUI::formatFlagsWin() {
 }
 
 void emuTUI::formatScreenWin() {
+    mvwprintw(this->screenWin, 3, 3, scrout.str().c_str());
+
     wrefresh(this->screenWin);
 }
