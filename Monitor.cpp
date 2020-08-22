@@ -6,6 +6,8 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     {
     this->memory = memory;
     this->mp = mp;
+    this->terminateFlag = false;
+
     this->monitorHeight = monitorHeight;
     this->monitorWidth = monitorWidth;
     this->offsetY = offsetY;
@@ -112,16 +114,31 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     );
 }
 
+Monitor::~Monitor() {
+    this->terminateFlag = true;
+    this->tuiThread.join();
+
+    delwin(this->memoryWin);
+    delwin(this->stackWin);
+    delwin(this->regWin);
+    delwin(this->controlWin);
+    delwin(this->flagsWin);
+
+    endwin();
+}
+
 void Monitor::start() {
     this->tuiThread = std::thread([this]() { 
-        while(1) {
+        while(!this->terminateFlag) {
             this->formatMemoryWin();
             this->formatStackWin();
             this->formatRegWin();
             this->formatControlWin();
             this->formatFlagsWin();
-            std::this_thread::sleep_for(std::chrono::milliseconds(250));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(250));
         }
+
+        return;
     });
 }
 

@@ -141,6 +141,15 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xF8, &W65C02S::SED},
     // SEI: Set interrupt disable flag
     {0x78, &W65C02S::SEI},
+    // STA: Store register A
+    {0x8D, &W65C02S::STA},
+    {0x9D, &W65C02S::STA},
+    {0x99, &W65C02S::STA},
+    {0x85, &W65C02S::STA},
+    {0x81, &W65C02S::STA},
+    {0x95, &W65C02S::STA},
+    {0x92, &W65C02S::STA},
+    {0x91, &W65C02S::STA},
     // STX: Store register X
     {0x8E, &W65C02S::STX},
     {0x86, &W65C02S::STX},

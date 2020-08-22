@@ -396,7 +396,10 @@ void W65C02S::JSR(uint8_t opcode) {
 
 void W65C02S::LDA(uint8_t opcode) {
     switch (opcode) {
-        case 0xAD: { 
+        case 0xAD: {
+            uint16_t addr = this->memory[++this->PC];
+            addr += this->memory[++this->PC] << 8;
+            this->A = this->memory[addr];
             break;
         } case 0xBD: {
             break;

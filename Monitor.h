@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <sstream>
 #include <thread>
+#include <atomic>
 #include "W65C02S.h"
 
 class Monitor {
@@ -12,14 +13,18 @@ public:
     Monitor(uint8_t* memory, W65C02S* mp, 
         unsigned int monitorHeight, unsigned int monitorWidth,
         int offsetY, int offsetX);
-    // ~emuTUI();
+    ~Monitor();
 
     void start();
 
 private:
+    // references and thread stuff
     uint8_t* memory;
     W65C02S* mp;
     std::thread tuiThread;
+    std::atomic<bool> terminateFlag;
+    
+    // info related to the "window" in which the monitor will place the memory window, stack window, etc.
     unsigned int monitorHeight;
     unsigned int monitorWidth;
     int offsetY;

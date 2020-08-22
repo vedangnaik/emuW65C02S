@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
         std::cout << "file open failed" << std::endl;
         return -1;
     }
-    // This should be rewritten to properly align and pad files which are not exactly 65536 bytes long.
+    // This may or may not be the best way to handle incorrect file sizes, but until it fails we'll see
     fs.seekg(0, fs.end);
     int fileSize = fs.tellg();
     fs.seekg(0, fs.beg);
@@ -32,8 +32,12 @@ int main(int argc, char* argv[]) {
     }
 
     W65C02S* my6502 = new W65C02S(&memory[0]);
-    Monitor* tui = new Monitor(&memory[0], my6502, 43, 145, 0, 0);
+    Monitor* monitor = new Monitor(&memory[0], my6502, 43, 145, 0, 0);
 
-    tui->start();
+    monitor->start();
     my6502->run();
+
+    // the run function will run infinitely if there are no errors. If an error occurs, say for example a invalid instruction or something, the function terminates. In that case, a large delay is introduced to give the user time to read the screen, then the custom destructor for Monitor is called, which terminates all threads and windows and shut down ncurses mode.
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    monitor->~Monitor();
 }
