@@ -13,10 +13,10 @@ add_library(
 )
 
 add_library(
-    emuTUILib STATIC
-    emuTUI.h
-    emuTUI.cpp
+    MonitorLib STATIC
+    Monitor.h
+    Monitor.cpp
 )
 
 add_executable(emuW65C02S main.cpp)
-target_link_libraries(emuW65C02S W65C02SLib emuTUILib ncurses pthread)
+target_link_libraries(emuW65C02S W65C02SLib MonitorLib ncurses pthread)
