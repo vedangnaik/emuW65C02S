@@ -412,7 +412,9 @@ void W65C02S::LDA(uint8_t opcode) {
             break;
         } case 0xA1: {
             break;
-        } case 0xB5: {
+        } case 0xB5: { // zero page indirect address with register X
+            uint16_t addr = this->X + this->memory[++this->PC];
+            this->A = this->memory[addr];
             break;
         } case 0xB2: {
             break;
@@ -747,7 +749,9 @@ void W65C02S::STA(uint8_t opcode) {
             break; 
         } case 0x81: {
             break; 
-        } case 0x95: {
+        } case 0x95: { // zero page indirect address with register X
+            uint16_t addr = this->X + this->memory[++this->PC];
+            this->memory[addr] = this->A;
             break; 
         } case 0x92: {
             break; 
