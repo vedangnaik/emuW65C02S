@@ -1,12 +1,12 @@
 #include <iostream>
 #include <fstream>
 #include "W65C02S.h"
-#include "emuTUI.h"
-
-uint8_t RAM[MAX_MEMSIZE];
+#include "Monitor.h"
 
 
 int main(int argc, char* argv[]) {
+    uint8_t memory[MAX_MEMSIZE];
+
     // Check for correct number of args
     // (disabled for dev)
     // if (argc <= 1) {
@@ -23,13 +23,13 @@ int main(int argc, char* argv[]) {
         return -1;
     }
     // This should be rewritten to properly align and pad files which are not exactly 65536 bytes long. 
-    if (!f.read((char*)RAM, MAX_MEMSIZE)) {
+    if (!f.read((char*)memory, MAX_MEMSIZE)) {
         std::cout << "file read failed" << std::endl;
         return -1;
     }
 
-    W65C02S* my6502 = new W65C02S(&RAM[0]);
-    emuTUI* tui = new emuTUI(&RAM[0], my6502);
+    W65C02S* my6502 = new W65C02S(&memory[0]);
+    Monitor* tui = new Monitor(&memory[0], my6502, 43, 189);
 
     tui->start();
     my6502->run();

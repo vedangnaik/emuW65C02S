@@ -1,8 +1,12 @@
-#include "emuTUI.h"
+#include "Monitor.h"
 
-emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
+Monitor::Monitor(uint8_t* memory, W65C02S* mp, 
+        unsigned int monitorHeight, unsigned int monitorWidth) 
+    {
     this->memory = memory;
     this->mp = mp;
+    this->monitorHeight = monitorHeight;
+    this->monitorWidth = monitorWidth;
     
     // init all ncurses stuff here
     initscr();
@@ -13,8 +17,8 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     // init all windows here
     // memory window
     this->memoryWinLen = 75 + 6 + 6;
-    this->memoryWin = newwin(LINES, this->memoryWinLen, 
-            0, COLS - this->memoryWinLen);
+    this->memoryWin = newwin(this->monitorHeight, this->memoryWinLen, 
+            0, this->monitorWidth - this->memoryWinLen);
     box(this->memoryWin, 0, 0);
     std::string memoryWinTitle = "MEMORY";
     mvwprintw(
@@ -26,8 +30,8 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
 
     // stack window
     this->stackWinLen = 70;
-    this->stackWin = newwin(LINES, this->stackWinLen, 
-            0, COLS - this->memoryWinLen - this->stackWinLen);
+    this->stackWin = newwin(this->monitorHeight, this->stackWinLen, 
+            0, this->monitorWidth - this->memoryWinLen - this->stackWinLen);
     box(this->stackWin, 0, 0);
     std::string stackWinTitle = "STACK";
     mvwprintw(
@@ -39,7 +43,7 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
 
     // registers window
     this->regWinHeight = 5 + 6;
-    this->regWinLen = COLS - this->stackWinLen - this->memoryWinLen;
+    this->regWinLen = this->monitorWidth - this->stackWinLen - this->memoryWinLen;
     this->regWin = newwin(this->regWinHeight, this->regWinLen, 
             0, 0);
     box(this->regWin, 0, 0);
@@ -80,21 +84,21 @@ emuTUI::emuTUI(uint8_t* memory, W65C02S* mp) {
     );
 
     // screen window
-    this->screenWinHeight = LINES - this->regWinHeight - this->cntWinHeight - this->flagsWinHeight;
-    this->screenWinLen = this->regWinLen;
-    this->screenWin = newwin(this->screenWinHeight, this->screenWinLen, 
-        LINES - this->screenWinHeight, 0);
-    box(this->screenWin, 0, 0);
-    std::string screenWinTitle = "SCREEN";
-    mvwprintw(
-        this->screenWin,
-        1,
-        (this->screenWinLen - screenWinTitle.length()) / 2,
-        screenWinTitle.c_str()
-    );
+    // this->screenWinHeight = this->monitorHeight - this->regWinHeight - this->cntWinHeight - this->flagsWinHeight;
+    // this->screenWinLen = this->regWinLen;
+    // this->screenWin = newwin(this->screenWinHeight, this->screenWinLen, 
+    //     this->monitorHeight - this->screenWinHeight, 0);
+    // box(this->screenWin, 0, 0);
+    // std::string screenWinTitle = "SCREEN";
+    // mvwprintw(
+    //     this->screenWin,
+    //     1,
+    //     (this->screenWinLen - screenWinTitle.length()) / 2,
+    //     screenWinTitle.c_str()
+    // );
 }
 
-void emuTUI::start() {
+void Monitor::start() {
     this->tuiThread = std::thread([this]() { 
         while(1) {
             this->formatMemoryWin();
@@ -102,12 +106,12 @@ void emuTUI::start() {
             this->formatRegWin();
             this->formatControlWin();
             this->formatFlagsWin();
-            this->formatScreenWin();
+            // this->formatScreenWin();
         }
     });
 }
 
-void emuTUI::formatMemoryWin() {
+void Monitor::formatMemoryWin() {
     for (int l = 0; l < MAX_MEMSIZE; l += 24) {
         std::stringstream line;
         line << std::setfill('0') << std::setw(5) 
@@ -124,7 +128,7 @@ void emuTUI::formatMemoryWin() {
     wrefresh(this->memoryWin);
 }
 
-void emuTUI::formatStackWin() {
+void Monitor::formatStackWin() {
     for (int i = 0; i < 32; i++) {
         std::stringstream line;
         for (int j = 0; j < 8; j++) {
@@ -147,7 +151,7 @@ void emuTUI::formatStackWin() {
     wrefresh(this->stackWin);
 }
 
-void emuTUI::formatRegWin() {
+void Monitor::formatRegWin() {
     mvwprintw(this->regWin, 3, 3, 
         "%-*s%.2x", this->regWinLen - 8, "Accumulator:", this->mp->A);
     mvwprintw(this->regWin, 4, 3, 
@@ -162,7 +166,7 @@ void emuTUI::formatRegWin() {
     wrefresh(this->regWin);
 }
 
-void emuTUI::formatControlWin() {
+void Monitor::formatControlWin() {
     mvwprintw(this->controlWin, 3, 3, 
         "%-*s%.4x", this->cntWinLen - 10, "Program counter:", this->mp->PC);
     mvwprintw(this->controlWin, 4, 3, 
@@ -172,7 +176,7 @@ void emuTUI::formatControlWin() {
     wrefresh(this->controlWin);
 }
 
-void emuTUI::formatFlagsWin() {
+void Monitor::formatFlagsWin() {
     mvwprintw(this->flagsWin, 3, 3, 
         "%-*s%.1d", this->flagsWinLen - 7, "Carry:", this->mp->C);
     mvwprintw(this->flagsWin, 4, 3, 
@@ -191,6 +195,6 @@ void emuTUI::formatFlagsWin() {
     wrefresh(this->flagsWin);
 }
 
-void emuTUI::formatScreenWin() {
-    wrefresh(this->screenWin);
-}
+// void monitor::formatScreenWin() {
+//     wrefresh(this->screenWin);
+// }
