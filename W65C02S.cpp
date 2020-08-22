@@ -31,9 +31,13 @@ void W65C02S::run() {
         void (W65C02S::*executor)(uint8_t);
         executor = this->decoder[this->IR];
         // execute instruction
-        (this->*(executor))(this->IR);
+        if (!executor) {
+            std::cout << this->IR << ": Unimplemented instruction / invalid opcode" << std::endl;
+        } else {
+            (this->*(executor))(this->IR);
+        }
         // delay for dev work
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
         // increment PC
         this->PC++;
     }
