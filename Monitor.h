@@ -10,7 +10,8 @@
 class Monitor {
 public:
     Monitor(uint8_t* memory, W65C02S* mp, 
-        unsigned int monitorHeight, unsigned int monitorWidth);
+        unsigned int monitorHeight, unsigned int monitorWidth,
+        int offsetY, int offsetX);
     // ~emuTUI();
 
     void start();
@@ -21,6 +22,8 @@ private:
     std::thread tuiThread;
     unsigned int monitorHeight;
     unsigned int monitorWidth;
+    int offsetY;
+    int offsetX;
 
     WINDOW* memoryWin;
     unsigned int memoryWinLen;

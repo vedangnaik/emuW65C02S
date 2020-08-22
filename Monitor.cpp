@@ -1,12 +1,15 @@
 #include "Monitor.h"
 
 Monitor::Monitor(uint8_t* memory, W65C02S* mp, 
-        unsigned int monitorHeight, unsigned int monitorWidth) 
+        unsigned int monitorHeight, unsigned int monitorWidth,
+        int offsetY, int offsetX) 
     {
     this->memory = memory;
     this->mp = mp;
     this->monitorHeight = monitorHeight;
     this->monitorWidth = monitorWidth;
+    this->offsetY = offsetY;
+    this->offsetX = offsetX;
     
     // init all ncurses stuff here
     initscr();
@@ -18,8 +21,12 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     // memory window
     // length calculation: each column has 8 2-digit hex characters (16) plus 7 spaces between the numbers (16+7) plus 1 space before and after the 1st and 8th hex character (16+7+2=25). There are two such columns (25+25). The address counter takes up 5 hex characters plus a space before and after (5+2=7). The border takes up 2 more spaces (25+25+7+2).
     this->memoryWinLen = 25 + 25 + 7 + 2;
-    this->memoryWin = newwin(this->monitorHeight, this->memoryWinLen, 
-            0, this->monitorWidth - this->memoryWinLen);
+    this->memoryWin = newwin(
+        this->monitorHeight, 
+        this->memoryWinLen, 
+        this->offsetY + 0, 
+        this->offsetX + this->monitorWidth - this->memoryWinLen
+    );
     box(this->memoryWin, 0, 0);
     std::string memoryWinTitle = "MEMORY";
     mvwprintw(
@@ -32,8 +39,12 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     // stack window
     // length calculation: each column of 32 addresses takes up 2 chacaracters for the addess, one for the space, 2 for contents of that address, and 2 for one space on either side (2+1+2+2=7). There are eight such columns to span the full 256 bytes of stack space (8*7=56). The border takes up 2 more spaces (56+2).
     this->stackWinLen = 56 + 2;
-    this->stackWin = newwin(this->monitorHeight, this->stackWinLen, 
-            0, this->monitorWidth - this->memoryWinLen - this->stackWinLen);
+    this->stackWin = newwin(
+        this->monitorHeight, 
+        this->stackWinLen, 
+        this->offsetY + 0, 
+        this->offsetX + this->monitorWidth - this->memoryWinLen - this->stackWinLen
+    );
     box(this->stackWin, 0, 0);
     std::string stackWinTitle = "STACK";
     mvwprintw(
@@ -47,8 +58,12 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     // height calculation: 5 registers, each takes a line (5). Plus 3 lines of padding above and below (5+3+3).
     this->regWinHeight = 5 + 3 + 3;
     this->regWinLen = this->monitorWidth - this->stackWinLen - this->memoryWinLen;
-    this->regWin = newwin(this->regWinHeight, this->regWinLen, 
-            0, 0);
+    this->regWin = newwin(
+        this->regWinHeight, 
+        this->regWinLen, 
+        this->offsetY + 0, 
+        this->offsetX + 0
+    );
     box(this->regWin, 0, 0);
     std::string regWinTitle = "REGISTERS";
     mvwprintw(
@@ -62,8 +77,12 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     // height calculation: the program counter and instruction register each take a line (2). Plus 3 lines of padding above and below (2+3+3).
     this->cntWinHeight = 2 + 3 + 3;
     this->cntWinLen = this->regWinLen;
-    this->controlWin = newwin(this->cntWinHeight, this->cntWinLen, 
-            this->regWinHeight, 0);
+    this->controlWin = newwin(
+        this->cntWinHeight, 
+        this->cntWinLen, 
+        this->offsetY + this->regWinHeight, 
+        this->offsetX + 0
+    );
     box(this->controlWin, 0, 0);
     std::string cntWinTitle = "CONTROL";
     mvwprintw(
@@ -77,8 +96,12 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
     // height calculation: 7 flags, each takes a line (7). Plus 3 lines of padding above and below (7+3+3).
     this->flagsWinHeight = 7 + 3 + 3;
     this->flagsWinLen = this->regWinLen;
-    this->flagsWin = newwin(this->flagsWinHeight, this->flagsWinLen,
-            this->regWinHeight + this->cntWinHeight, 0);
+    this->flagsWin = newwin(
+        this->flagsWinHeight, 
+        this->flagsWinLen, 
+        this->offsetY + this->regWinHeight + this->cntWinHeight, 
+        this->offsetX + 0
+    );
     box(this->flagsWin, 0, 0);
     std::string flagsWinTitle = "FLAGS";
     mvwprintw(
@@ -87,20 +110,6 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
         (this->flagsWinLen - flagsWinTitle.length()) / 2, 
         flagsWinTitle.c_str()
     );
-
-    // screen window
-    // this->screenWinHeight = this->monitorHeight - this->regWinHeight - this->cntWinHeight - this->flagsWinHeight;
-    // this->screenWinLen = this->regWinLen;
-    // this->screenWin = newwin(this->screenWinHeight, this->screenWinLen, 
-    //     this->monitorHeight - this->screenWinHeight, 0);
-    // box(this->screenWin, 0, 0);
-    // std::string screenWinTitle = "SCREEN";
-    // mvwprintw(
-    //     this->screenWin,
-    //     1,
-    //     (this->screenWinLen - screenWinTitle.length()) / 2,
-    //     screenWinTitle.c_str()
-    // );
 }
 
 void Monitor::start() {
@@ -111,7 +120,6 @@ void Monitor::start() {
             this->formatRegWin();
             this->formatControlWin();
             this->formatFlagsWin();
-            // this->formatScreenWin();
         }
     });
 }
@@ -202,7 +210,3 @@ void Monitor::formatFlagsWin() {
 
     wrefresh(this->flagsWin);
 }
-
-// void monitor::formatScreenWin() {
-//     wrefresh(this->screenWin);
-// }

@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     }
 
     W65C02S* my6502 = new W65C02S(&memory[0]);
-    Monitor* tui = new Monitor(&memory[0], my6502, 43, 164);
+    Monitor* tui = new Monitor(&memory[0], my6502, 43, 164, 0, 0);
 
     tui->start();
     my6502->run();
