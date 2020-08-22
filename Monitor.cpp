@@ -16,7 +16,7 @@ Monitor::Monitor(uint8_t* memory, W65C02S* mp,
 
     // init all windows here
     // memory window
-    this->memoryWinLen = 75 + 6 + 6;
+    this->memoryWinLen = 50 + 6 + 3;
     this->memoryWin = newwin(this->monitorHeight, this->memoryWinLen, 
             0, this->monitorWidth - this->memoryWinLen);
     box(this->memoryWin, 0, 0);
@@ -112,18 +112,18 @@ void Monitor::start() {
 }
 
 void Monitor::formatMemoryWin() {
-    for (int l = 0; l < MAX_MEMSIZE; l += 24) {
+    for (int l = 0; l < MAX_MEMSIZE; l += 16) {
         std::stringstream line;
         line << std::setfill('0') << std::setw(5) 
                     << std::hex << l << " ";
-        for (int subl = l; subl < l + 24; subl += 8) {
+        for (int subl = l; subl < l + 16; subl += 8) {
             line << " ";
             for (int b = subl; b < subl + 8; b++) {
                 line << std::setfill('0') << std::setw(2) 
                     << std::hex << (int)this->memory[b] << " ";
             }
         }
-        mvwprintw(this->memoryWin, 3+(l / 24), 3, line.str().c_str());
+        mvwprintw(this->memoryWin, 3+(l / 16), 2, line.str().c_str());
     }
     wrefresh(this->memoryWin);
 }
