@@ -217,8 +217,8 @@ void W65C02S::CLI(uint8_t opcode) {
 }
 
 void W65C02S::CLV(uint8_t opcode) {
-    switch (opcode) { // i
-        case 0xB8: {
+    switch (opcode) {
+        case 0xB8: { // i
             this->V = false;
             break;
         } default: {
@@ -228,39 +228,41 @@ void W65C02S::CLV(uint8_t opcode) {
 }
 
 void W65C02S::CMP(uint8_t opcode) {
-    // setting up intermediate values for subtraction
-    uint8_t M = this->A;
-    uint8_t N;
-    uint16_t res;
+    uint8_t operand;
     switch (opcode) {
-        case 0xCD: { // compare absolute address with accumulator
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr];
+        case 0xCD: { // a
+            operand = this->memory[abs()];
             break;
-        } case 0xDD: {
+        } case 0xDD: { // a, x
+            operand = this->memory[absIndX()];
             break; 
-        } case 0xD9: {
+        } case 0xD9: { // a, y
+            operand = this->memory[absIndY()];
             break; 
-        } case 0xC9: { // compare immediate value with accumulator
-            N = this->memory[++this->PC];
+        } case 0xC9: { // #
+            operand = this->memory[++this->PC];
             break; 
-        } case 0xC5: {
+        } case 0xC5: { // zp
+            operand = this->memory[zp()];
             break;
-        } case 0xC1: {
+        } case 0xC1: { // (zp, x)
+            operand = this->memory[zpIndIndir()];
             break; 
-        } case 0xD5: {
+        } case 0xD5: { // zp, x
+            operand = this->memory[zpIndX()];
             break; 
-        } case 0xD2: {
+        } case 0xD2: { // (zp)
+            operand = this->memory[zpIndir()];
             break; 
-        } case 0xD1: {
+        } case 0xD1: { // (zp), y
+            operand = this->memory[zpIndirIndY()];
             break; 
         } default: {
             std::cout << "invalid opcode for CMP" << std::endl;
         }
     }
-    // Internally, CMP performs a subtraction without borrow.
-    res = M - N;
+    // Internally, CMP subtracts the operand from the accumulator without borrow, uses the result to set the flags, then discards it.
+    uint16_t res = this->A - operand;
     // the flags are set in the same was as SBC does.
     this->C = res <= 255;
     this->Z = res == 0;
@@ -269,50 +271,44 @@ void W65C02S::CMP(uint8_t opcode) {
 }
 
 void W65C02S::CPX(uint8_t opcode) {
-    uint8_t M = this->X;
-    uint8_t N;
-    uint16_t res;
+    uint8_t operand;
     switch (opcode) {
-        case 0xEC: { // compare absolute address with register X
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr];
+        case 0xEC: { // a
+            operand = this->memory[abs()];
             break;
-        } case 0xE0: { // compare immediate value with register X
-            N = this->memory[++this->PC];
-            break; 
-        } case 0xE4: {
-            break; 
+        } case 0xE0: { // #
+            operand = this->memory[++this->PC];
+            break;
+        } case 0xE4: { // zp
+            operand = this->memory[zp()];
+            break;
         } default: {
             std::cout << "invalid opcode for CPX" << std::endl;
         }
     }
-    res = M - N;
+    uint16_t res = this->X - operand;
     this->C = res <= 255;
     this->Z = res == 0;
     this->N = (bool)(res & 0x80);
 }
 
 void W65C02S::CPY(uint8_t opcode) {
-    uint8_t M = this->Y;
-    uint8_t N;
-    uint16_t res;
+    uint8_t operand;
     switch (opcode) {
-        case 0xCC: { // compare absolute address with register Y
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr];
+        case 0xCC: { // a
+            operand = this->memory[abs()];
             break;
-        } case 0xC0: { // compare immediate value with register Y
-            N = this->memory[++this->PC];
-            break; 
-        } case 0xC4: {
-            break; 
+        } case 0xC0: { // #
+            operand = this->memory[++this->PC];
+            break;
+        } case 0xC4: { // zp
+            operand = this->memory[zp()];
+            break;
         } default: {
             std::cout << "invalid opcode for CPY" << std::endl;
         }
     }
-    res = M - N;
+    uint16_t res = this->Y - operand;
     this->C = res <= 255;
     this->Z = res == 0;
     this->N = (bool)(res & 0x80);
@@ -321,20 +317,21 @@ void W65C02S::CPY(uint8_t opcode) {
 void W65C02S::DEC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
-        case 0xCE: {   // decrement absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            res = --this->memory[addr];
+        case 0xCE: { // a
+            res = --this->memory[abs()];
             break;
-        } case 0xDE: {
+        } case 0xDE: { // a, x
+            res = --this->memory[absIndX()];
             break; 
-        } case 0x3A: { // decrement register A
+        } case 0x3A: { // A
             res = --this->A;
             break; 
-        } case 0xC6: { 
+        } case 0xC6: { // zp
+            res = --this->memory[zp()];
             break; 
-        } case 0xD6: {
-            break; 
+        } case 0xD6: { // zp, x
+            res = --this->memory[zpIndX()];
+            break;
         } default: {
             std::cout << "invalid opcode for DEC" << std::endl;
         }
@@ -345,7 +342,7 @@ void W65C02S::DEC(uint8_t opcode) {
 
 void W65C02S::DEX(uint8_t opcode) {
     switch (opcode) {
-        case 0xCA: {
+        case 0xCA: { // i
             this->X--;
             break;
         } default: {
@@ -357,7 +354,7 @@ void W65C02S::DEX(uint8_t opcode) {
 }
 
 void W65C02S::DEY(uint8_t opcode) {
-    switch (opcode) {
+    switch (opcode) { // i
         case 0x88: {
             this->Y--;
             break;
@@ -372,19 +369,20 @@ void W65C02S::DEY(uint8_t opcode) {
 void W65C02S::INC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
-        case 0xEE: {   // increment absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            res = ++this->memory[addr];
+        case 0xEE: { // a
+            res = ++this->memory[abs()];
             break;
-        } case 0xFE: {
+        } case 0xFE: { // a, x
+            res = ++this->memory[absIndX()];
             break; 
-        } case 0x1A: { // increment register A
+        } case 0x1A: { // A
             res = ++this->A;
             break; 
-        } case 0xE6: { 
+        } case 0xE6: { // zp
+            res = ++this->memory[zp()];
             break; 
-        } case 0xF6: {
+        } case 0xF6: { // zp, x
+            res = ++this->memory[zpIndX()];
             break; 
         } default: {
             std::cout << "invalid opcode for INC" << std::endl;
@@ -396,7 +394,7 @@ void W65C02S::INC(uint8_t opcode) {
 
 void W65C02S::INX(uint8_t opcode) {
     switch (opcode) {
-        case 0xE8: {
+        case 0xE8: { // i
             this->X++;
             break;
         } default: {
@@ -409,7 +407,7 @@ void W65C02S::INX(uint8_t opcode) {
 
 void W65C02S::INY(uint8_t opcode) {
     switch (opcode) {
-        case 0xC8: {
+        case 0xC8: { // i
             this->Y++;
             break;
         } default: {
@@ -421,17 +419,26 @@ void W65C02S::INY(uint8_t opcode) {
 }
 
 void W65C02S::JMP(uint8_t opcode) {
+    // The -1 is because the main loop will increment the PC by one after executing this function, to the correct position.
     switch (opcode) {
-        case 0x4C: {   // jump to absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            // The -1 is because the main loop will increment the PC by one, to the correct position.
-            this->PC = addr - 1;
+        case 0x4C: { // a
+            this->PC = abs() - 1;
             break;
-        } case 0x7C: {
-            break; 
-        } case 0x6C: {
-            break; 
+        } case 0x7C: { // (a, x)
+            uint16_t ptrAddr = this->memory[++this->PC];
+            ptrAddr += this->memory[++this->PC] << 8;
+            ptrAddr += this->X;
+            uint16_t jmpAddr = this->memory[ptrAddr];
+            jmpAddr += this->memory[++ptrAddr] << 8;
+            this->PC = jmpAddr - 1;
+            break;
+        } case 0x6C: { // (a)
+            uint16_t ptrAddr = this->memory[++this->PC];
+            ptrAddr += this->memory[++this->PC] << 8;
+            uint16_t jmpAddr = this->memory[ptrAddr];
+            jmpAddr += this->memory[++ptrAddr] << 8;
+            this->PC = jmpAddr - 1;
+            break;
         } default: {
             std::cout << "invalid opcode for JMP" << std::endl;
         }
@@ -440,14 +447,13 @@ void W65C02S::JMP(uint8_t opcode) {
 
 void W65C02S::JSR(uint8_t opcode) {
     switch (opcode) {
-        case 0x20: {
-            int subroutineAddr = this->memory[++this->PC];
-            subroutineAddr += this->memory[++this->PC] << 8;
+        case 0x20: { // a
+            int subroutineAddr = abs();
             // push current PC value to stack (this is the point to return to)
-            // the 6502 reportedly pushed the location of the next address - 1 to the stack. Here, there's no need to do - 1 since the PC hasn't been incremented; the next instruction is at at PC++;
+            // the 6502 reportedly pushed the location of the next address - 1 to the stack. Here, there's no need to do - 1 since the PC hasn't been incremented; the next instruction is at at PC++, which the main loop will do after RTS loads this value back into the PC.
             this->memory[0x0100 + (this->S--)] = this->PC >> 8;
             this->memory[0x0100 + (this->S--)] = this->PC & 0x00FF;
-            // As for JMP, the - 1 is because the main loop will increment PC.
+            // As with JMP, the - 1 is because the main loop will increment PC.
             this->PC = subroutineAddr - 1;
             break;
         } default: {
