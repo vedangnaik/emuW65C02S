@@ -43,6 +43,24 @@ private:
     // opcodes to instruction hashmap - defined in decoder.cpp
     static std::map<uint8_t, void (W65C02S::*)(uint8_t)> decoder;
 
+    // addressing mode calculators - all defined in executors.cc
+    uint16_t abs(); // a
+    // (a, x): Only used with JMP
+    uint16_t absIndX(); // a, x
+    uint16_t absIndY(); // a, y
+    // (a): Only used with JMP
+    // A: No need for function
+    // #: No need for function
+    // i: No need for function
+    // r: Only used with branch instructions
+    // s: Only used with stack instructions
+    uint16_t zp(); // zp
+    uint16_t zpIndIndir(); // (zp, x)
+    uint16_t zpIndX(); // zp, x
+    uint16_t zpIndY(); // zp, y
+    uint16_t zpIndir(); // (zp)
+    uint16_t zpIndirIndY(); // (zp), y
+
     // instruction executors - all defined in executors.cpp
     void ADC(uint8_t opcode);
     void AND(uint8_t opcode);

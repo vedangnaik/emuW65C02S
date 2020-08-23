@@ -1,60 +1,94 @@
 #include "W65C02S.h"
 
-/*
+/*  ADDRESSING MODE CALCULATORS
     addr is always the address of the operand. This address is calculated by whatever means neccessary depending on the particular addressing mode. 
 */
+uint16_t W65C02S::abs() {
+    uint16_t addr = this->memory[++this->PC];
+    addr += this->memory[++this->PC] << 8;
+    return addr;
+}
+uint16_t W65C02S::absIndX() {
+    uint16_t addr = this->memory[++this->PC];
+    addr += this->memory[++this->PC] << 8;
+    addr += this->X;
+    return addr;
+}
+uint16_t W65C02S::absIndY() {
+    uint16_t addr = this->memory[++this->PC];
+    addr += this->memory[++this->PC] << 8;
+    addr += this->Y;
+    return addr;
+}
+uint16_t W65C02S::zp() {
+    uint16_t addr = this->memory[++this->PC];
+    return addr;
+}
+uint16_t W65C02S::zpIndIndir() {
+    uint16_t lowByteAddr = (this->memory[++this->PC] + this->X) & 0xFF;
+    uint16_t addr = this->memory[lowByteAddr];
+    addr += this->memory[++lowByteAddr] << 8;
+    return addr;
+}
+uint16_t W65C02S::zpIndX() {
+    uint16_t addr = (this->memory[++this->PC] + this->X) & 0xFF;
+    return addr;
+}
+uint16_t W65C02S::zpIndY() {
+    uint16_t addr = (this->memory[++this->PC] + this->Y) & 0xFF;
+    return addr;
+}
+uint16_t W65C02S::zpIndir() {
+    uint16_t lowByteAddr = this->memory[++this->PC];
+    uint16_t addr = this->memory[lowByteAddr];
+    addr += this->memory[++lowByteAddr] << 8;
+    return addr;
+}
+uint16_t W65C02S::zpIndirIndY() {
+    uint16_t lowByteAddr = this->memory[++this->PC];
+    uint16_t addr = this->memory[lowByteAddr];
+    addr += this->memory[++lowByteAddr] << 8;
+    addr += this->Y;
+    return addr;
+}
 
+
+/*  INSTRUCTION EXECUTORS
+    The instructions are ordered alphabetically the same way they are presented in the official datasheet from WDC.
+*/
 void W65C02S::ADC(uint8_t opcode) {
     // Values needed to calculate the flags
     // res = M + N + carry
     uint8_t M = this->A;
     uint8_t N;
     uint16_t res;
-    switch (opcode) {  // a
+    switch (opcode) { // a
         case 0x6D: {
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr];
+            N = this->memory[abs()];
             break;
         } case 0x7D: { // a, x
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr] + this->X;
+            N = this->memory[absIndX()];
             break;
         } case 0x79: { // a, y
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr] + this->Y;
+            N = this->memory[absIndY()];
             break;
         } case 0x69: { // #
             N = this->memory[++this->PC];
             break;
         } case 0x65: { // zp
-            uint16_t addr = this->memory[++this->PC];
-            N = this->memory[addr];
+            N = this->memory[zp()];
             break;
         } case 0x61: { // (zp, x)
-            uint16_t lowByteAddr = (this->memory[++this->PC] + this->X) & 0xFF;
-            uint16_t addr = this->memory[lowByteAddr];
-            addr += this->memory[++lowByteAddr] << 8;
-            N = this->memory[addr];
+            N = this->memory[zpIndIndir()];
             break;
         } case 0x75: { // zp, x
-            uint16_t addr = (this->memory[++this->PC] + this->X) & 0xFF;
-            N = this->memory[addr];
+            N = this->memory[zpIndX()];
             break; 
         } case 0x72: { // (zp)
-            uint16_t lowByteAddr = this->memory[++this->PC];
-            uint16_t addr = this->memory[lowByteAddr];
-            addr += this->memory[++lowByteAddr] << 8;
-            N = this->memory[addr];
+            N = this->memory[zpIndir()];
             break; 
         } case 0x71: { // (zp), y
-            uint16_t lowByteAddr = this->memory[++this->PC];
-            uint16_t addr = this->memory[lowByteAddr];
-            addr += this->memory[++lowByteAddr] << 8;
-            addr += this->Y;
-            N = this->memory[addr];
+            N = this->memory[zpIndirIndY()];
             break; 
         } default: {
             std::cout << "invalid opcode for ADC" << std::endl;
