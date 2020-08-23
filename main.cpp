@@ -17,7 +17,8 @@ int main(int argc, char* argv[]) {
     // get filename from args
     // (set to absolute path for dev)
     char* fileName = argv[1];
-    std::ifstream fs("/home/vedang/Desktop/AllSuiteA.bin", std::ios::binary);
+    std::ifstream fs("/home/vedang/Desktop/asm6502/a.out", std::ios::binary);
+    // std::ifstream fs("/home/vedang/Desktop/AllSuiteA.bin", std::ios::binary);
     if (!fs) {
         std::cout << "file open failed" << std::endl;
         return -1;

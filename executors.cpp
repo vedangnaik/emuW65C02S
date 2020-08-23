@@ -464,29 +464,32 @@ void W65C02S::JSR(uint8_t opcode) {
 
 void W65C02S::LDA(uint8_t opcode) {
     switch (opcode) {
-        case 0xAD: {
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->A = this->memory[addr];
+        case 0xAD: { // a
+            this->A = this->memory[abs()];
             break;
-        } case 0xBD: {
+        } case 0xBD: { // a, x
+            this->A = this->memory[absIndX()];
             break;
-        } case 0xB9: {
+        } case 0xB9: { // a, y
+            this->A = this->memory[absIndY()];
             break;
-        } case 0xA9: { // immediate load
+        } case 0xA9: { // #
             this->A = this->memory[++this->PC];
             break;
-        } case 0xA5: {
+        } case 0xA5: { // zp
+            this->A = this->memory[zp()];
             break;
-        } case 0xA1: {
+        } case 0xA1: { // (zp, x)
+            this->A = this->memory[zpIndIndir()];
             break;
-        } case 0xB5: { // zero page indirect address with register X
-            uint16_t addr = this->X + this->memory[++this->PC];
-            this->A = this->memory[addr];
+        } case 0xB5: { // zp, x
+            this->A = this->memory[zpIndX()];
             break;
-        } case 0xB2: {
+        } case 0xB2: { // (zp)
+            this->A = this->memory[zpIndir()];
             break;
-        } case 0xB1: {
+        } case 0xB1: { // (zp), y
+            this->A = this->memory[zpIndirIndY()];
             break;
         } default: {
             std::cout << "invalid opcode for LDA" << std::endl;
@@ -498,20 +501,21 @@ void W65C02S::LDA(uint8_t opcode) {
 
 void W65C02S::LDX(uint8_t opcode) {
     switch (opcode) {
-        case 0xAE: {   // absolute address load
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->X = this->memory[addr]; 
+        case 0xAE: { // a
+            this->X = this->memory[abs()]; 
             break;
-        } case 0xBE: {
+        } case 0xBE: { // a, y
+            this->X = this->memory[absIndY()];
             break; 
-        } case 0xA2: { // immediate load
+        } case 0xA2: { // #
             this->X = this->memory[++this->PC];
             break; 
-        } case 0xA6: {
+        } case 0xA6: { // zp
+            this->X = this->memory[zp()];
             break; 
-        } case 0xB6: {
-            break; 
+        } case 0xB6: { // zp, y
+            this->X = this->memory[zpIndY()];
+            break;
         } default: {
             std::cout << "invalid opcode for LDX" << std::endl;
         }
@@ -522,20 +526,21 @@ void W65C02S::LDX(uint8_t opcode) {
 
 void W65C02S::LDY(uint8_t opcode) {
     switch (opcode) {
-        case 0xAC: {   // absolute address load
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->Y = this->memory[addr]; 
+        case 0xAC: { // a
+            this->Y = this->memory[abs()]; 
             break;
-        } case 0xBC: {
+        } case 0xBC: { // a, x
+            this->Y = this->memory[absIndX()];
             break; 
-        } case 0xA0: { // immediate load
+        } case 0xA0: { // #
             this->Y = this->memory[++this->PC];
             break; 
-        } case 0xA4: {
+        } case 0xA4: { // zp
+            this->Y = this->memory[zp()];
             break; 
-        } case 0xB4: {
-            break; 
+        } case 0xB4: { // zp, x
+            this->Y = this->memory[zpIndX()];
+            break;
         } default: {
             std::cout << "invalid opcode for LDY" << std::endl;
         }
@@ -551,8 +556,7 @@ void W65C02S::NOP(uint8_t opcode) {
 void W65C02S::PHA(uint8_t opcode) {
     switch (opcode) {
         case 0x48: {
-            this->memory[0x0100 + this->S] = this->A;
-            this->S--;
+            this->memory[0x0100 + (this->S--)] = this->A;
             break;
         } default: {
             std::cout << "invalid opcode for PHA" << std::endl;
@@ -563,8 +567,7 @@ void W65C02S::PHA(uint8_t opcode) {
 void W65C02S::PHP(uint8_t opcode) {
     switch (opcode) {
         case 0x08: {
-            this->memory[0x0100 + this->S] = this->makePfromFlags();
-            this->S--;
+            this->memory[0x0100 + (this->S--)] = this->makePfromFlags();
             break;
         } default: {
             std::cout << "invalid opcode for PHP" << std::endl;
@@ -575,8 +578,7 @@ void W65C02S::PHP(uint8_t opcode) {
 void W65C02S::PHX(uint8_t opcode) {
     switch (opcode) {
         case 0xDA: {
-            this->memory[0x0100 + this->S] = this->X;
-            this->S--;
+            this->memory[0x0100 + (this->S--)] = this->X;
             break;
         } default: {
             std::cout << "invalid opcode for PHX" << std::endl;
@@ -587,8 +589,7 @@ void W65C02S::PHX(uint8_t opcode) {
 void W65C02S::PHY(uint8_t opcode) {
     switch (opcode) {
         case 0x5A: {
-            this->memory[0x0100 + this->S] = this->Y;
-            this->S--;
+            this->memory[0x0100 + (this->S--)] = this->Y;
             break;
         } default: {
             std::cout << "invalid opcode for PHY" << std::endl;
@@ -599,8 +600,7 @@ void W65C02S::PHY(uint8_t opcode) {
 void W65C02S::PLA(uint8_t opcode) {
     switch (opcode) {
         case 0x68: {
-            this->S++;
-            this->A = this->memory[0x0100 + this->S];
+            this->A = this->memory[0x0100 + (++this->S)];
             break;
         } default: {
             std::cout << "invalid opcode for PLA" << std::endl;
@@ -613,8 +613,7 @@ void W65C02S::PLA(uint8_t opcode) {
 void W65C02S::PLP(uint8_t opcode) {
     switch (opcode) {
         case 0x28: {
-            this->S++;
-            this->setFlagsFromP(this->memory[0x0100 + this->S]);
+            this->setFlagsFromP(this->memory[0x0100 + (++this->S)]);
             break;
         } default: {
             std::cout << "invalid opcode for PLP" << std::endl;
@@ -625,8 +624,7 @@ void W65C02S::PLP(uint8_t opcode) {
 void W65C02S::PLX(uint8_t opcode) {
     switch (opcode) {
         case 0xFA: {
-            this->S++;
-            this->X = this->memory[0x0100 + this->S];
+            this->X = this->memory[0x0100 + (++this->S)];
             break;
         } default: {
             std::cout << "invalid opcode for PLX" << std::endl;
@@ -639,8 +637,7 @@ void W65C02S::PLX(uint8_t opcode) {
 void W65C02S::PLY(uint8_t opcode) {
     switch (opcode) {
         case 0x7A: {
-            this->S++;
-            this->Y = this->memory[0x0100 + this->S];
+            this->Y = this->memory[0x0100 + (++this->S)];
             break;
         } default: {
             std::cout << "invalid opcode for PLY" << std::endl;
@@ -653,23 +650,34 @@ void W65C02S::PLY(uint8_t opcode) {
 void W65C02S::ROL(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
-        case 0x2E: {   // absolute rotate left 
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
+        case 0x2E: { // a
+            uint16_t addr = abs();
             this->C = (bool)(this->memory[addr] & 0x80);
             res = (this->memory[addr] << 1) | this->C;
             this->memory[addr] = res;
             break;
-        } case 0x3E: {
+        } case 0x3E: { // a, x
+            uint16_t addr = absIndX();
+            this->C = (bool)(this->memory[addr] & 0x80);
+            res = (this->memory[addr] << 1) | this->C;
+            this->memory[addr] = res;
             break;
-        } case 0x2A: { // register A rotate left
+        } case 0x2A: { // A
             this->C = (bool)(this->A & 0x80);
             res = (this->A << 1) | this->C;
             this->A = res;
             break;
-        } case 0x26: { 
+        } case 0x26: { // zp
+            uint16_t addr = zp();
+            this->C = (bool)(this->memory[addr] & 0x80);
+            res = (this->memory[addr] << 1) | this->C;
+            this->memory[addr] = res;
             break;
-        } case 0x36: {
+        } case 0x36: { // zp, x
+            uint16_t addr = zpIndX();
+            this->C = (bool)(this->memory[addr] & 0x80);
+            res = (this->memory[addr] << 1) | this->C;
+            this->memory[addr] = res;
             break;
         } default: {
             std::cout << "invalid opcode for ROL" << std::endl;
@@ -682,23 +690,34 @@ void W65C02S::ROL(uint8_t opcode) {
 void W65C02S::ROR(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
-        case 0x6E: {   // absolute rotate left 
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
+        case 0x6E: { // a
+            uint16_t addr = abs();
             this->C = (bool)(this->memory[addr] & 0x01);
             res = (this->memory[addr] >> 1) | this->C;
             this->memory[addr] = res;
             break;
-        } case 0x7E: {
+        } case 0x7E: { // a, x
+            uint16_t addr = absIndX();
+            this->C = (bool)(this->memory[addr] & 0x01);
+            res = (this->memory[addr] >> 1) | this->C;
+            this->memory[addr] = res;
             break; 
-        } case 0x6A: { // register A rotate left
+        } case 0x6A: { // A
             this->C = (bool)(this->A & 0x01);
             res = (this->A >> 1) | this->C;
             this->A = res;
             break; 
-        } case 0x66: { 
+        } case 0x66: { // zp
+            uint16_t addr = zp();
+            this->C = (bool)(this->memory[addr] & 0x01);
+            res = (this->memory[addr] >> 1) | this->C;
+            this->memory[addr] = res;
             break; 
-        } case 0x76: {
+        } case 0x76: { // zp, x
+            uint16_t addr = zpIndX();
+            this->C = (bool)(this->memory[addr] & 0x01);
+            res = (this->memory[addr] >> 1) | this->C;
+            this->memory[addr] = res;
             break; 
         } default: {
             std::cout << "invalid opcode for ROR" << std::endl;
@@ -710,7 +729,7 @@ void W65C02S::ROR(uint8_t opcode) {
 
 void W65C02S::RTS(uint8_t opcode) {
     switch (opcode) {
-        case 0x60: {
+        case 0x60: { // s
             // This assumes that the return address is the topmost 16-bits on the stack currently. If someone's left some stuff there, it'll fail.
             uint16_t returnAddr = this->memory[0x0100 + (++this->S)];
             returnAddr += this->memory[0x0100 + (++this->S)] << 8;
@@ -725,51 +744,53 @@ void W65C02S::RTS(uint8_t opcode) {
 
 void W65C02S::SBC(uint8_t opcode) {
     // Values needed to calculate the flags
-    // res = M - N - (~carry)
-    uint8_t M = this->A;
-    uint8_t N;
-    uint16_t res;
-    switch (opcode) {  // add absolute address with carry
-        case 0xED: {
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            N = this->memory[addr];
+    // A = oldA - operand - (~carry)
+    uint8_t oldA = this->A;
+    uint8_t operand;
+    switch (opcode) {
+        case 0xED: { // a
+            operand = this->memory[abs()];
             break;
-        } case 0xFD: {
+        } case 0xFD: { // a, x
+            operand = this->memory[absIndX()];
             break; 
-        } case 0xF9: {
-            break; 
-        } case 0xE9: { // add immediate value with carry
-            N = this->memory[++this->PC];
+        } case 0xF9: { // a, y
+            operand = this->memory[absIndY()];
             break;
-        } case 0xE5: {
+        } case 0xE9: { // #
+            operand = this->memory[++this->PC];
+            break;
+        } case 0xE5: { // zp
+            operand = this->memory[zp()];
             break; 
-        } case 0xE1: {
+        } case 0xE1: { // (zp, x)
+            operand = this->memory[zpIndIndir()];
             break; 
-        } case 0xF5: {
+        } case 0xF5: { // zp, x
+            operand = this->memory[zpIndX()];
             break; 
-        } case 0xF2: {
+        } case 0xF2: { // (zp)
+            operand = this->memory[zpIndir()];
             break; 
-        } case 0xF1: {
+        } case 0xF1: {// (zp), y
+            operand = this->memory[zpIndirIndY()];
             break; 
         } default: {
             std::cout << "invalid opcode for SBC" << std::endl;
         }
     }
-    // calculate intermediate values
-    res = M - N - (!this->C);
+    // calculate difference and store in accumulator
+    this->A = oldA - operand - (!this->C);
     // set flags
-    this->C = res <= 255;
-    this->Z = res == 0;
-    this->V = (bool)((M ^ res) & (N ^ res) & 0x80); 
-    this->N = (bool)(res & 0x80);
-    // set accumulator value
-    this->A = res;
+    this->C = this->A <= 255;
+    this->Z = this->A == 0;
+    this->V = (bool)((oldA ^ this->A) & (operand ^ this->A) & 0x80); 
+    this->N = (bool)(this->A & 0x80);
 }
 
 void W65C02S::SEC(uint8_t opcode) {
     switch (opcode) {
-        case 0x38: {
+        case 0x38: { // i
             this->C = true;
             break;
         } default: {
@@ -779,7 +800,7 @@ void W65C02S::SEC(uint8_t opcode) {
 }
 
 void W65C02S::SED(uint8_t opcode) {
-    switch (opcode) {
+    switch (opcode) { // i
         case 0xF8: {
             this->D = true;
             break;
@@ -790,7 +811,7 @@ void W65C02S::SED(uint8_t opcode) {
 }
 
 void W65C02S::SEI(uint8_t opcode) {
-    switch (opcode) {
+    switch (opcode) { // i
         case 0x78: {
             this->I = true;
             break;
