@@ -214,30 +214,30 @@ void W65C02S::BEQ(uint8_t opcode) {
 }
 
 void W65C02S::BIT(uint8_t opcode) {
-    uint16_t addr;
+    uint8_t operand;
     switch (opcode) {
         case 0x2C: { // a
-            addr = abs();
+            operand = this->memory[abs()];
             break;
         } case 0x3C: { // a, x
-            addr = absIndX();
+            operand = this->memory[absIndX()];
             break; 
         } case 0x89: { // #
-            addr = imm();
+            operand = this->memory[imm()];
             break;
         } case 0x24: { // zp
-            addr = zp();
+            operand = this->memory[zp()];
             break;
         } case 0x34: { // zp, x
-            addr = zpIndX();
+            operand = this->memory[zpIndX()];
             break;
         } default: {
             std::cout << "invalid opcode for BIT" << std::endl;
         }
     }
-    this->Z = (this->A & this->memory[addr]) == 0;
-    this->V = this->memory[addr] & 0b01000000;
-    this->N = this->memory[addr] & 0b10000000;
+    this->Z = (this->A & operand) == 0;
+    this->V = operand & 0b01000000;
+    this->N = operand & 0b10000000;
 }
 
 void W65C02S::BMI(uint8_t opcode) {
@@ -493,6 +493,45 @@ void W65C02S::DEY(uint8_t opcode) {
     this->N = (bool)(this->Y & 0x80);
 }
 
+void W65C02S::EOR(uint8_t opcode) {
+    uint8_t operand;
+    switch (opcode) {
+        case 0x4D: { // a
+            operand = this->memory[abs()];
+            break;
+        } case 0x5D: { // a, x
+            operand = this->memory[absIndX()];
+            break; 
+        } case 0x59: { // a, y
+            operand = this->memory[absIndY()];
+            break; 
+        } case 0x49: { // #
+            operand = this->memory[imm()];
+            break; 
+        } case 0x45: { // zp
+            operand = this->memory[zp()];
+            break; 
+        } case 0x41: { // (zp, x)
+            operand = this->memory[zpIndIndir()];
+            break; 
+        } case 0x55: { // zp, x
+            operand = this->memory[zpIndX()];
+            break; 
+        } case 0x52: { // (zp)
+            operand = this->memory[zpIndir()];
+            break; 
+        } case 0x51: { // (zp), y
+            operand = this->memory[zpIndirIndY()];
+            break; 
+        } default: {
+            std::cout << "invalid opcode for EOR" << std::endl;
+        }
+    }
+    this->A ^= operand;
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
+}
+
 void W65C02S::INC(uint8_t opcode) {
     uint8_t res;
     switch (opcode) {
@@ -674,6 +713,33 @@ void W65C02S::LDY(uint8_t opcode) {
     }
     this->Z = this->Y == 0;
     this->N = (bool)(this->Y & 0x80);
+}
+
+void W65C02S::LSR(uint8_t opcode) {
+    uint16_t addr;
+    switch (opcode) {
+        case 0x4E: { // a
+            addr = abs();
+            break;
+        } case 0x5E: { // a, x
+            addr = absIndX();
+            break;
+        } case 0x4A: { // A
+            this->C = this->A & 0b10000000;
+            this->A <<= 1;
+            return;
+        } case 0x46: { // zp
+            addr = zp();
+            break;
+        } case 0x56: { // zp, x
+            addr = zpIndX();
+            break;
+        } default: {
+            std::cout << "invalid opcode for LSR" << std::endl;
+        }
+    }
+    this->C = this->memory[addr] & 0b00000001;
+    this->memory[addr] >>= 1;
 }
 
 void W65C02S::NOP(uint8_t opcode) {

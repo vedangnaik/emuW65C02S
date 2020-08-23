@@ -85,6 +85,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xCA, &W65C02S::DEX},
     // DEY: Decrement register Y
     {0x88, &W65C02S::DEY},
+    // EOR: Exclusive or memory with accumulator
+    {0x4D, &W65C02S::EOR},
+    {0x5D, &W65C02S::EOR},
+    {0x59, &W65C02S::EOR},
+    {0x49, &W65C02S::EOR},
+    {0x45, &W65C02S::EOR},
+    {0x41, &W65C02S::EOR},
+    {0x55, &W65C02S::EOR},
+    {0x52, &W65C02S::EOR},
+    {0x51, &W65C02S::EOR},
     // INC: Increment memory or register A
     {0xEE, &W65C02S::INC},
     {0xFE, &W65C02S::INC},
@@ -121,6 +131,12 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xA0, &W65C02S::LDY},
     {0xA4, &W65C02S::LDY},
     {0xB4, &W65C02S::LDY},
+    // LSR: Logical shift one bit right
+    {0x4E, &W65C02S::LSR},
+    {0x5E, &W65C02S::LSR},
+    {0x4A, &W65C02S::LSR},
+    {0x46, &W65C02S::LSR},
+    {0x56, &W65C02S::LSR},
     // NOP: No operation
     {0xEA, &W65C02S::NOP},
     // PH_: Push register onto stack

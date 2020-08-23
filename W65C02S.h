@@ -84,6 +84,7 @@ private:
     void DEC(uint8_t opcode);
     void DEX(uint8_t opcode);
     void DEY(uint8_t opcode);
+    void EOR(uint8_t opcode);
     void INC(uint8_t opcode);
     void INX(uint8_t opcode);
     void INY(uint8_t opcode);
@@ -92,6 +93,7 @@ private:
     void LDA(uint8_t opcode);
     void LDX(uint8_t opcode);
     void LDY(uint8_t opcode);
+    void LSR(uint8_t opcode);
     void NOP(uint8_t opcode);
     void PHA(uint8_t opcode);
     void PHP(uint8_t opcode);
