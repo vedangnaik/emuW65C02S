@@ -39,6 +39,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x89, &W65C02S::BIT},
     {0x24, &W65C02S::BIT},
     {0x34, &W65C02S::BIT},
+    // BMI: Branch if result is negative
+    {0x30, &W65C02S::BMI},
+    // BNE: Branch if not equal
+    {0xD0, &W65C02S::BNE},
+    // BPL: Branch if result is positive
+    {0x10, &W65C02S::BPL},
+    // BVC: Branch on overflow clear
+    {0x50, &W65C02S::BVC},
+    // BVS: Branch on overflow set
+    {0x70, &W65C02S::BVS},
     // CLC: Clear carry flag
     {0x18, &W65C02S::CLC},
     // CLD: Clear decimal mode flag

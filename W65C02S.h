@@ -69,6 +69,11 @@ private:
     void BCS(uint8_t opcode);
     void BEQ(uint8_t opcode);
     void BIT(uint8_t opcode);
+    void BMI(uint8_t opcode);
+    void BNE(uint8_t opcode);
+    void BPL(uint8_t opcode);
+    void BVC(uint8_t opcode);
+    void BVS(uint8_t opcode);
     void CLC(uint8_t opcode);
     void CLD(uint8_t opcode);
     void CLI(uint8_t opcode);

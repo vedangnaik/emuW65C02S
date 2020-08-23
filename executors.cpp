@@ -240,6 +240,76 @@ void W65C02S::BIT(uint8_t opcode) {
     this->N = this->memory[addr] & 0b10000000;
 }
 
+void W65C02S::BMI(uint8_t opcode) {
+    switch (opcode) {
+        case 0x30: { // r
+            uint8_t offset = this->memory[++this->PC];
+            if (this->N) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BMI" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BNE(uint8_t opcode) {
+    switch (opcode) {
+        case 0xD0: { // r
+            uint8_t offset = this->memory[++this->PC];
+            if (!this->Z) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BNE" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BPL(uint8_t opcode) {
+    switch (opcode) {
+        case 0x10: { // r
+            uint8_t offset = this->memory[++this->PC];
+            if (!this->N) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BPL" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BVC(uint8_t opcode) {
+    switch (opcode) {
+        case 0x50: { // r
+            uint8_t offset = this->memory[++this->PC];
+            if (!this->V) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BVC" << std::endl;
+        }
+    }
+}
+
+void W65C02S::BVS(uint8_t opcode) {
+    switch (opcode) {
+        case 0x50: { // r
+            uint8_t offset = this->memory[++this->PC];
+            if (this->V) {
+                this->PC += offset;
+            }
+            break;
+        } default: {
+            std::cout << "invalid opcode for BVS" << std::endl;
+        }
+    }
+}
+
 void W65C02S::CLC(uint8_t opcode) {
     switch (opcode) {
         case 0x18: { // i
