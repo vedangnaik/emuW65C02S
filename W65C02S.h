@@ -49,9 +49,9 @@ private:
     uint16_t absIndX(); // a, x
     uint16_t absIndY(); // a, y
     // (a): Only used with JMP
-    // A: No need for function
-    // #: No need for function
-    // i: No need for function
+    // A: No address here
+    uint16_t imm(); // #
+    // i: No address here
     // r: Only used with branch instructions
     // s: Only used with stack instructions
     uint16_t zp(); // zp
@@ -64,9 +64,11 @@ private:
     // instruction executors - all defined in executors.cpp
     void ADC(uint8_t opcode);
     void AND(uint8_t opcode);
+    void ASL(uint8_t opcode);
     void BCC(uint8_t opcode);
     void BCS(uint8_t opcode);
     void BEQ(uint8_t opcode);
+    void BIT(uint8_t opcode);
     void CLC(uint8_t opcode);
     void CLD(uint8_t opcode);
     void CLI(uint8_t opcode);

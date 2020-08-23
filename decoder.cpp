@@ -21,12 +21,24 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x35, &W65C02S::AND},
     {0x32, &W65C02S::AND},
     {0x31, &W65C02S::AND},
+    // ASL: Arithmetic shift one bit left
+    {0x0E, &W65C02S::ASL},
+    {0x1E, &W65C02S::ASL},
+    {0x0A, &W65C02S::ASL},
+    {0x06, &W65C02S::ASL},
+    {0x16, &W65C02S::ASL},
     // BCC: Branch if carry = 0
     {0x90, &W65C02S::BCC},
     // BCS: Branch if carry = 1
     {0xB0, &W65C02S::BCS},
     // BEQ: Branch if zero = 1
     {0xF0, &W65C02S::BEQ},
+    // BIT: Bit test (see https://retrocomputing.stackexchange.com/questions/11108/why-does-the-6502-have-the-bit-instruction for uses)
+    {0x2C, &W65C02S::BIT},
+    {0x3C, &W65C02S::BIT},
+    {0x89, &W65C02S::BIT},
+    {0x24, &W65C02S::BIT},
+    {0x34, &W65C02S::BIT},
     // CLC: Clear carry flag
     {0x18, &W65C02S::CLC},
     // CLD: Clear decimal mode flag
