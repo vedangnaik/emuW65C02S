@@ -85,7 +85,7 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0xCA, &W65C02S::DEX},
     // DEY: Decrement register Y
     {0x88, &W65C02S::DEY},
-    // EOR: Exclusive or memory with accumulator
+    // EOR: Bitwise XOR memory with accumulator
     {0x4D, &W65C02S::EOR},
     {0x5D, &W65C02S::EOR},
     {0x59, &W65C02S::EOR},
@@ -139,6 +139,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x56, &W65C02S::LSR},
     // NOP: No operation
     {0xEA, &W65C02S::NOP},
+    // ORA: Bitwise OR memory with accumulator
+    {0x0D, &W65C02S::ORA},
+    {0x1D, &W65C02S::ORA},
+    {0x19, &W65C02S::ORA},
+    {0x09, &W65C02S::ORA},
+    {0x05, &W65C02S::ORA},
+    {0x01, &W65C02S::ORA},
+    {0x15, &W65C02S::ORA},
+    {0x12, &W65C02S::ORA},
+    {0x11, &W65C02S::ORA},
     // PH_: Push register onto stack
     {0x48, &W65C02S::PHA},
     {0x08, &W65C02S::PHP},
@@ -196,8 +206,16 @@ std::map<uint8_t, void (W65C02S::*)(uint8_t)> W65C02S::decoder = {
     {0x8C, &W65C02S::STY},
     {0x84, &W65C02S::STY},
     {0x94, &W65C02S::STY},
+    // TAX: Transfer accumulator to X register
+    {0xAA, &W65C02S::TAX},
+    // TAY: Transfer accumulator to Y register
+    {0xA8, &W65C02S::TAY},
+    // TSX: Transfer stack pointer to X register
+    {0xBA, &W65C02S::TSX},
     // TXA: Transfer X register to accumulator
     {0x8A, &W65C02S::TXA},
+    // TXS: Transfer X register to stack pointer
+    {0x9A, &W65C02S::TXS},
     // TYA: Transfer Y register to accumulator
     {0x98, &W65C02S::TYA}
 };

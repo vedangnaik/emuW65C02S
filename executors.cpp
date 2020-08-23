@@ -746,6 +746,45 @@ void W65C02S::NOP(uint8_t opcode) {
     ;
 }
 
+void W65C02S::ORA(uint8_t opcode) {
+    uint8_t operand;
+    switch (opcode) {
+        case 0x0D: { // a
+            operand = this->memory[abs()];
+            break;
+        } case 0x1D: { // a, x
+            operand = this->memory[absIndX()];
+            break; 
+        } case 0x19: { // a, y
+            operand = this->memory[absIndY()];
+            break; 
+        } case 0x09: { // #
+            operand = this->memory[imm()];
+            break; 
+        } case 0x05: { // zp
+            operand = this->memory[zp()];
+            break; 
+        } case 0x01: { // (zp, x)
+            operand = this->memory[zpIndIndir()];
+            break; 
+        } case 0x15: { // zp, x
+            operand = this->memory[zpIndX()];
+            break; 
+        } case 0x12: { // (zp)
+            operand = this->memory[zpIndir()];
+            break; 
+        } case 0x11: { // (zp), y
+            operand = this->memory[zpIndirIndY()];
+            break; 
+        } default: {
+            std::cout << "invalid opcode for ORA" << std::endl;
+        }
+    }
+    this->A |= operand;
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
+}
+
 void W65C02S::PHA(uint8_t opcode) {
     switch (opcode) {
         case 0x48: {
@@ -1080,17 +1119,69 @@ void W65C02S::STY(uint8_t opcode) {
     }
 }
 
+void W65C02S::TAX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xAA: { // i
+            this->X = this->A;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TAX" << std::endl;
+        }
+    }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
+}
+
+void W65C02S::TAY(uint8_t opcode) {
+    switch (opcode) {
+        case 0xA8: { // i
+            this->Y = this->A;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TAY" << std::endl;
+        }
+    }
+    this->Z = this->Y == 0;
+    this->N = (bool)(this->Y & 0x80);
+}
+
+void W65C02S::TSX(uint8_t opcode) {
+    switch (opcode) {
+        case 0xBA: { // i
+            this->X = this->S;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TSX" << std::endl;
+        }
+    }
+    this->Z = this->X == 0;
+    this->N = (bool)(this->X & 0x80);
+}
+
 void W65C02S::TXA(uint8_t opcode) {
     switch (opcode) {
         case 0x8A: { // i
             this->A = this->X;
             break;
         } default: {
-            std::cout << "invalid opcode for TAX" << std::endl;
+            std::cout << "invalid opcode for TXA" << std::endl;
         }
     }
     this->Z = this->A == 0;
     this->N = (bool)(this->A & 0x80);
+}
+
+void W65C02S::TXS(uint8_t opcode) {
+    switch (opcode) {
+        case 0x9A: { // i
+            this->S = this->X;
+            break;
+        } default: {
+            std::cout << "invalid opcode for TXS" << std::endl;
+        }
+    }
+    this->Z = this->S == 0;
+    this->N = (bool)(this->S & 0x80);
 }
 
 void W65C02S::TYA(uint8_t opcode) {
@@ -1099,7 +1190,7 @@ void W65C02S::TYA(uint8_t opcode) {
             this->A = this->Y;
             break;
         } default: {
-            std::cout << "invalid opcode for TAY" << std::endl;
+            std::cout << "invalid opcode for TYA" << std::endl;
         }
     }
     this->Z = this->A == 0;

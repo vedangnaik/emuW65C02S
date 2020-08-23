@@ -95,6 +95,7 @@ private:
     void LDY(uint8_t opcode);
     void LSR(uint8_t opcode);
     void NOP(uint8_t opcode);
+    void ORA(uint8_t opcode);
     void PHA(uint8_t opcode);
     void PHP(uint8_t opcode);
     void PHX(uint8_t opcode);
@@ -113,7 +114,11 @@ private:
     void STA(uint8_t opcode);
     void STX(uint8_t opcode);
     void STY(uint8_t opcode);
+    void TAX(uint8_t opcode);
+    void TAY(uint8_t opcode);
+    void TSX(uint8_t opcode);
     void TXA(uint8_t opcode);
+    void TXS(uint8_t opcode);
     void TYA(uint8_t opcode);
 };
 
