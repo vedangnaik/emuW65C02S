@@ -823,28 +823,29 @@ void W65C02S::SEI(uint8_t opcode) {
 
 void W65C02S::STA(uint8_t opcode) {
     switch (opcode) {
-        case 0x8D: {   // store at absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->memory[addr] = this->A;
+        case 0x8D: { // a
+            this->memory[abs()] = this->A;
             break;
-        } case 0x9D: {
+        } case 0x9D: { // a, x
+            this->memory[absIndX()] = this->A;
             break; 
-        } case 0x99: {
+        } case 0x99: { // a, y
+            this->memory[absIndY()] = this->A;
+            break;
+        } case 0x85: { // zp
+            this->memory[zp()] = this->A;
             break; 
-        } case 0xA9: { 
+        } case 0x81: { // (zp, x)
+            this->memory[zpIndIndir()] = this->A;
+            break;
+        } case 0x95: { // zp, x
+            this->memory[zpIndX()] = this->A;
+            break;
+        } case 0x92: { // (zp)
+            this->memory[zpIndir()] = this->A;
             break; 
-        } case 0x85: {
-            break; 
-        } case 0x81: {
-            break; 
-        } case 0x95: { // zero page indirect address with register X
-            uint16_t addr = this->X + this->memory[++this->PC];
-            this->memory[addr] = this->A;
-            break; 
-        } case 0x92: {
-            break; 
-        } case 0x91: {
+        } case 0x91: { // (zp), y
+            this->memory[zpIndirIndY()] = this->A;
             break; 
         } default: {
             std::cout << "invalid opcode for STA" << std::endl;
@@ -854,14 +855,14 @@ void W65C02S::STA(uint8_t opcode) {
 
 void W65C02S::STX(uint8_t opcode) {
     switch (opcode) {
-        case 0x8E: {   // store at absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->memory[addr] = this->X;
+        case 0x8E: { // a
+            this->memory[abs()] = this->X;
             break;
-        } case 0x86: {
+        } case 0x86: { // zp
+            this->memory[zp()] = this->X;
             break; 
-        } case 0x96: {
+        } case 0x96: { // zp, y
+            this->memory[zpIndY()] = this->X;
             break; 
         } default: {
             std::cout << "invalid opcode for STX" << std::endl;
@@ -871,14 +872,14 @@ void W65C02S::STX(uint8_t opcode) {
 
 void W65C02S::STY(uint8_t opcode) {
     switch (opcode) {
-        case 0x8C: {   // store at absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            this->memory[addr] = this->Y;
+        case 0x8C: { // a
+            this->memory[abs()] = this->Y;
             break;
-        } case 0x84: {
+        } case 0x84: { // zp
+            this->memory[zp()] = this->Y;
             break; 
-        } case 0x94: {
+        } case 0x94: { // zp, x
+            this->memory[zpIndX()] = this->Y;
             break; 
         } default: {
             std::cout << "invalid opcode for STY" << std::endl;
@@ -888,7 +889,7 @@ void W65C02S::STY(uint8_t opcode) {
 
 void W65C02S::TXA(uint8_t opcode) {
     switch (opcode) {
-        case 0x8A: {
+        case 0x8A: { // i
             this->A = this->X;
             break;
         } default: {
@@ -901,7 +902,7 @@ void W65C02S::TXA(uint8_t opcode) {
 
 void W65C02S::TYA(uint8_t opcode) {
     switch (opcode) {
-        case 0x98: {
+        case 0x98: { // i
             this->A = this->Y;
             break;
         } default: {
