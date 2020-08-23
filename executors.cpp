@@ -58,91 +58,92 @@ uint16_t W65C02S::zpIndirIndY() {
 */
 void W65C02S::ADC(uint8_t opcode) {
     // Values needed to calculate the flags
-    // res = M + N + carry
-    uint8_t M = this->A;
-    uint8_t N;
-    uint16_t res;
+    // A = oldA + operand + carry
+    uint8_t oldA = this->A;
+    uint8_t operand;
     switch (opcode) { // a
         case 0x6D: {
-            N = this->memory[abs()];
+            operand = this->memory[abs()];
             break;
         } case 0x7D: { // a, x
-            N = this->memory[absIndX()];
+            operand = this->memory[absIndX()];
             break;
         } case 0x79: { // a, y
-            N = this->memory[absIndY()];
+            operand = this->memory[absIndY()];
             break;
         } case 0x69: { // #
-            N = this->memory[++this->PC];
+            operand = this->memory[++this->PC];
             break;
         } case 0x65: { // zp
-            N = this->memory[zp()];
+            operand = this->memory[zp()];
             break;
         } case 0x61: { // (zp, x)
-            N = this->memory[zpIndIndir()];
+            operand = this->memory[zpIndIndir()];
             break;
         } case 0x75: { // zp, x
-            N = this->memory[zpIndX()];
+            operand = this->memory[zpIndX()];
             break; 
         } case 0x72: { // (zp)
-            N = this->memory[zpIndir()];
+            operand = this->memory[zpIndir()];
             break; 
         } case 0x71: { // (zp), y
-            N = this->memory[zpIndirIndY()];
+            operand = this->memory[zpIndirIndY()];
             break; 
         } default: {
             std::cout << "invalid opcode for ADC" << std::endl;
         }
     }
-    // calculate intermediate values
-    res = M + N + this->C;
+    // calculate sum and store in A register
+    this->A = oldA + operand + this->C;
     // set flags
-    this->C = res > 255;
-    this->Z = res == 0;
-    this->V = (bool)((M ^ res) & (N ^ res) & 0x80); 
-    this->N = (bool)(res & 0x80);
-    // set accumulator value
-    this->A = res;
+    this->C = this->A > 255;
+    this->Z = this->A == 0;
+    this->V = (bool)((oldA ^ this->A) & (operand ^ this->A) & 0x80); 
+    this->N = (bool)(this->A & 0x80);
 }
 
 void W65C02S::AND(uint8_t opcode) {
-    uint8_t res;
-    switch (opcode) {
-        case 0x2D: { // AND absolute address
-            uint16_t addr = this->memory[++this->PC];
-            addr += this->memory[++this->PC] << 8;
-            res = this->A & this->memory[addr];
+    uint8_t operand;
+    switch (opcode) { 
+        case 0x2D: { // a
+            operand = this->memory[abs()];
             break;
-        } case 0x3D: {
+        } case 0x3D: { // a, x
+            operand = this->memory[absIndX()];
             break; 
-        } case 0x39: {
+        } case 0x39: { // a, y
+            operand = this->memory[absIndY()];
             break; 
-        } case 0x29: { // AND immediate value
-            res = this->A & this->memory[++this->PC];
+        } case 0x29: { // #
+            operand = this->memory[++this->PC];
             break; 
-        } case 0x25: {
+        } case 0x25: { // zp
+            operand = this->memory[zp()];
             break; 
-        } case 0x21: {
+        } case 0x21: { // (zp, x)
+        operand = this->memory[zpIndIndir()];
             break; 
-        } case 0x35: {
+        } case 0x35: { // zp, x
+            operand = this->memory[zpIndX()];
             break; 
-        } case 0x32: {
+        } case 0x32: { // (zp)
+            operand = this->memory[zpIndir()];
             break; 
-        } case 0x31: {
-            break; 
+        } case 0x31: { // (zp), y
+            operand = this->memory[zpIndirIndY()];
+            break;
         } default: {
             std::cout << "invalid opcode for AND" << std::endl;
         }
     }
-    this->A = res;
-    this->Z = res == 0;
-    this->N = (bool)(res & 0x80);
+    this->A = this->A & operand;
+    this->Z = this->A == 0;
+    this->N = (bool)(this->A & 0x80);
 }
 
 void W65C02S::BCC(uint8_t opcode) {
     switch (opcode) {
-        case 0x90: {
-            // BCC uses relative mode addressing for setting the PC 
+        case 0x90: { // r
             uint8_t offset = this->memory[++this->PC];
             if (!this->C) {
                 this->PC += offset;
@@ -156,7 +157,7 @@ void W65C02S::BCC(uint8_t opcode) {
 
 void W65C02S::BCS(uint8_t opcode) {
     switch (opcode) {
-        case 0xB0: {
+        case 0xB0: { // r
             uint8_t offset = this->memory[++this->PC];
             if (this->C) {
                 this->PC += offset;
@@ -170,7 +171,7 @@ void W65C02S::BCS(uint8_t opcode) {
 
 void W65C02S::BEQ(uint8_t opcode) {
     switch (opcode) {
-        case 0xF0: {
+        case 0xF0: { // r
             uint8_t offset = this->memory[++this->PC];
             if (this->Z) {
                 this->PC += offset;
@@ -184,7 +185,7 @@ void W65C02S::BEQ(uint8_t opcode) {
 
 void W65C02S::CLC(uint8_t opcode) {
     switch (opcode) {
-        case 0x18: {
+        case 0x18: { // i
             this->C = false;
             break;
         } default: {
@@ -194,7 +195,7 @@ void W65C02S::CLC(uint8_t opcode) {
 }
 
 void W65C02S::CLD(uint8_t opcode) {
-    switch (opcode) {
+    switch (opcode) { // i
         case 0xD8: {
             this->D = false;
             break;
@@ -206,7 +207,7 @@ void W65C02S::CLD(uint8_t opcode) {
 
 void W65C02S::CLI(uint8_t opcode) {
     switch (opcode) {
-        case 0x58: {
+        case 0x58: { // i
             this->I = false;
             break;
         } default: {
@@ -216,7 +217,7 @@ void W65C02S::CLI(uint8_t opcode) {
 }
 
 void W65C02S::CLV(uint8_t opcode) {
-    switch (opcode) {
+    switch (opcode) { // i
         case 0xB8: {
             this->V = false;
             break;
